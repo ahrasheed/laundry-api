@@ -3,7 +3,7 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="{{ locale_language_id }}"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="{{ locale_language_id }}"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang="{{ locale_language_id }}"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="{{ locale_language_id }}"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html  ng-app="easyLaundry" class="no-js" lang="{{ locale_language_id }}"> <!--<![endif]-->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -21,6 +21,10 @@
     {% endif %}
     <link rel="stylesheet" href="/boilerplate/css/boilerplate.min.css">
     <link rel="stylesheet" href="/{{ theme }}/css/style.css">
+	
+	<script src="/boilerplate/js/angular.min.js"></script>
+	<script src="/boilerplate/js/app.js"></script>
+	
     {% block mediaCSS %}{% endblock %}
 
     {{ google_analytics_code }}
@@ -28,7 +32,7 @@
        Modernizr enables HTML5 elements & feature detects for optimal performance. -->
     <script src="/boilerplate/js/libs/modernizr-2.7.1.min.js"></script>
 </head>
-<body>
+<body  ng-controller="LaundryItems">
 <!--[if lt IE 9]>
     	<p class=chromeframe>{% trans %}Your browser is <em>ancient!</em>{% endtrans %} 
     	{% trans %}<a href="http://browsehappy.com/">Upgrade to a different browser</a>
@@ -37,33 +41,16 @@
 
 <div id="page">
     {% block navbar %}
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation"> <!-- -->
+		  <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="glyphicon-chevron-down glyphicon"></span>
                 </button>
-                <a class="navbar-brand" href="/">{{ app_name }}</a>
+                <a class="navbar-brand" href="/">Laundry4me<!--{{ app_name }}--></a>
             </div>
             <div class="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="https://github.com/coto/gae-boilerplate" target="_blank">
-                        <span class="glyphicon-inbox glyphicon"></span> {% trans %}Source Code{% endtrans %}</a>
-                    </li>
-                    {% if locale_iso %}
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <span class="glyphicon-globe glyphicon"></span>
-                                {% trans %}Language{% endtrans %} : {{ locale_language }} <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                {% for l in locales %}
-                                    {% if locale_iso != l %}
-                                        <li><a href="{{ path_for_language }}&hl={{ l }}">{{ locales[l] }}</a></li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% endif %}
                     {% if user_id %}
                         <li class="divider-vertical"></li>
                         <li class="dropdown">
@@ -129,8 +116,7 @@
                     {% endif %}
                 </ul>
             </div>
-            <!-- /.nav-collapse -->
-
+            <!-- /.nav-collapse -->		
             </div>
             <!-- /navbar-inner -->
         </div><!-- /navbar -->
@@ -141,14 +127,14 @@
             <header class="navbar" id="overview">
                 {% block header_title_lead %}
                     <h1>{% block header_title %}{{ app_name }}{% endblock %}</h1>
-                    <p class="lead">
+                    <!--p class="lead">
                         {% trans %}Congratulations on your Google App Engine Boilerplate powered page.{% endtrans %}
                         <br><a href="http://github.com/coto/gae-boilerplate/blob/master/README.md" target="_blank">
                         {% trans %}Learn why this Boilerplate Rocks{% endtrans %}</a> {% trans %}or just{% endtrans %}
                         <a href="http://github.com/coto/gae-boilerplate/" target="_blank">
                             {% trans %}download the Source Code{% endtrans %}</a>
                         {% trans %}to help you to create your application.{% endtrans %}
-                    </p>
+                    </p-->
                 {% endblock %}
                 {% block subnavbar %}
                     <div class="subnav">
@@ -178,6 +164,8 @@
                 </p>
             {% endfor %}
         {% endif %}
+		
+		
         {% block content %}{% endblock %}
 
         {% block footer %}
@@ -193,7 +181,7 @@
 
 <!-- JavaScript at the bottom for fast page loading -->
 <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="/boilerplate/js/libs/jquery.min.js"><\/script>')</script>
 <script src="/boilerplate/js/libs/bootstrap.min.js"></script>
 

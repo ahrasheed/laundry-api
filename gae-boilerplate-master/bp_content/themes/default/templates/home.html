@@ -5,18 +5,120 @@
 {% block content %}
 
     {% if user_id %}
-    <div class="jumbotron home_bp">
-        <h1>
-            Google App Engine Boilerplate
-        </h1>
-        <p>
-            {% trans %}Congratulations on your Google App Engine Boilerplate powered page.{% endtrans %}
-            <br><a href="http://github.com/coto/gae-boilerplate/blob/master/README.md" target="_blank">
-            {% trans %}Learn why this Boilerplate Rocks{% endtrans %}</a> {% trans %}or just{% endtrans %} 
-            <a href="http://github.com/coto/gae-boilerplate/" target="_blank">{% trans %}download the Source Code{% endtrans %}</a> 
-            {% trans %}to help you to create your application.{% endtrans %}
-        </p>
-    </div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-2 sidebar">	
+			<h2>My Orders {[{ testdata.test }]}</h2> 
+			          <ul class="nav nav-pills nav-stacked">
+						<li ng-repeat="ordertag in orders" ng-class="{ active:isOrder(ordertag.id) }"><a href="#" ng-click="selectOrder(ordertag.id)">{[{ ordertag.date }]}</a></li>
+					  </ul>		
+					  
+					  <!--ul>
+						  <li ng-repeat="x in names">
+							{[{ x.itemtype }]}
+						  </li>
+					  </ul-->
+
+			</div>
+			<div class="col-md-5">
+			
+			<h2>{[{ orders[orderid].date }]} </h2> 
+				 
+				 <div class="table-responsive">          
+					  <table class="table item-table">
+						<tbody>
+						  <tr ng-repeat="item in orders[orderid].orderitems">
+							<td>{[{ item.name }]}</td>
+							<td>~ {[{ item.weight }]} lbs</td>
+							<td>{[{ item.quantity }]}</td>							
+							<td width="56"><button ng-hide="orders[orderid].status === 'placed'" class="btn btn-default btn-block" type="button" ng-click="remove(item)"><span class="glyphicon glyphicon-remove"></span></button></td>
+						  </tr>
+						</tbody>
+					  </table>
+					  </div>
+
+			<form ng-show="addform" ng-submit="neworderItem()">
+			<div class="row">
+				<div class="col-md-6">
+					<label>Item Type</label>
+					<select class="form-control" ng-model="name" ng-options="laundryweight.itemtype for laundryweight in laundryweights">
+						<option value="">--- Select an Item ---</option>				
+					</select>
+				</div>
+				<div class="col-md-6">
+					<label>Quantity</label>
+					<input type="number" class="form-control" min="1" max="99" ng-model="quantity" placeholder="Quantity" ng-required />
+				</div>			
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<br/>
+					<button class="btn btn-danger btn-block" type="submit"  ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-plus"></span> Add to list</button>	
+				</div>
+			</div>		
+			</form>
+			
+			<button ng-hide="addform" class="btn btn-success btn-block" ng-click="addform = true"  ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-plus"></span> Add New Item</button>
+	
+			</div>
+			<div class="col-md-5">
+				
+				<div class="row">
+					<div class="col-md-7">
+						<h2 class="text-left">Estimated Weight</h2>
+						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Minimum Weight of 15 lbs]</blockquote>
+					</div>
+					<div class="col-md-5"><h2 class="text-right" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~ {[{ orders[orderid].totalweight | number:2 }]} lbs</h2></div>
+				</div>			
+				
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="usr">Pick Up Date</label>
+						  <input type="date" class="form-control" id="usr"  ng-disabled="orders[orderid].status === 'placed'">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="usr">Pick Up Time</label>
+						  <input type="time" class="form-control" placeholder="HH:mm:ss" required  ng-disabled="orders[orderid].status === 'placed'" />
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="usr">Drop Off Date</label>
+						  <input type="date" class="form-control" id="usr"  ng-disabled="orders[orderid].status === 'placed'">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="usr">Drop Off Time</label>
+						  <input type="time" class="form-control" placeholder="HH:mm:ss" required  ng-disabled="orders[orderid].status === 'placed'"/>
+						</div>
+					</div>
+				</div>
+				
+						<div class="form-group">
+							  <label for="comment">Special Instructions:</label>
+							  <textarea class="form-control" rows="5" id="comment" ng-disabled="orders[orderid].status === 'placed'"></textarea>
+						</div>
+						
+				<div class="row">
+					<div class="col-md-8">
+						<h2 class="text-left">Total Price</h2>
+						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Price is Estimated]</blockquote>
+					</div>
+					<div class="col-md-4"><h2 class="text-right">{[{ orders[orderid].totalweight * 10 | currency }]}</h2></div>
+				</div>			
+
+				 <button class="btn btn-lg btn-block btn-success" ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-shopping-cart"></span> Place Order</button>		
+				
+			</div>
+		  </div>
+	</div>
     {% else %}
     <div class="row">
         <div class="col-md-9">

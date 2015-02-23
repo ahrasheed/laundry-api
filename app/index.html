@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="easyLaundry">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Easy Laundry - Order Page</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+	<script src="js/angular.min.js"></script>
+	<script src="js/app.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<style>
+	table.item-table tr td {
+		font-size:16px;
+	 }
+	</style>
+  </head>
+  <!--body ng-controller="LaundryItems as laundry"  ng-init="laundry.items = [{name: 'Underwear',weight: 1.4,quantity: 8},{name: 'Shirt',weight: 2.2,quantity: 3},{name: 'Bra',weight: 0.4,quantity: 2}]"-->
+ <body ng-controller="LaundryItems">
+
+  <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Laundry4me</a>
+	  <!--img src="img/logolaundry.png" width="120"/-->
+    </div>
+    <div>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">John Doe<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Account</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="login.html">Log Out</a></li>
+              </ul>
+            </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-2 sidebar">	
+			<h2>My Orders</h2> 
+			          <ul class="nav nav-pills nav-stacked">
+						<li ng-repeat="ordertag in orders" ng-class="{ active:isOrder(ordertag.id) }"><a href="#" ng-click="selectOrder(ordertag.id)">{{ ordertag.date }}</a></li>
+						<!--li ng-class="{ active:isOrder(2) }"><a href="#" ng-click="selectOrder(2)">Sept 14, 2014</a></li>
+						<li ng-class="{ active:isOrder(3) }"><a href="#" ng-click="selectOrder(3)">Sept 6, 2014</a></li-->
+					  </ul>		
+			</div>
+			<div class="col-md-5">
+				 <!--a href="#" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-chevron-up"></span></a-->		
+			<h2>{{ orders[orderid].date }}</h2> 
+				 
+				 <div class="table-responsive">          
+					  <table class="table item-table">
+						<tbody>
+						  <tr ng-repeat="item in orders[orderid].orderitems">
+							<td>{{ item.name }}</td>
+							<td>~ {{ item.weight }} lbs</td>
+							<td>{{ item.quantity }}</td>							
+							<td width="56"><button ng-hide="orders[orderid].status === 'placed'" class="btn btn-default btn-block" type="button" ng-click="remove(item)"><span class="glyphicon glyphicon-remove"></span></button></td>
+						  </tr>
+						</tbody>
+					  </table>
+					  </div>
+				 <!--a href="#" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-chevron-down"></span></a>	
+				 <br/-->
+			<form ng-show="addform" ng-submit="neworderItem()">
+			<div class="row">
+				<div class="col-md-6">
+					<label>Item Type</label>
+					<select class="form-control" ng-model="name" ng-options="laundryweight.itemtype for laundryweight in laundryweights">
+						<option value="">--- Select an Item ---</option>				
+					</select>
+				</div>
+				<div class="col-md-6">
+					<label>Quantity</label>
+					<input type="number" class="form-control" min="1" max="99" ng-model="quantity" placeholder="Quantity" ng-required />
+				</div>			
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<br/>
+					<button class="btn btn-danger btn-block" type="submit"  ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-plus"></span> Add to list</button>	
+				</div>
+			</div>		
+			</form>
+			
+			<button ng-hide="addform" class="btn btn-success btn-block" ng-click="addform = true"  ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-plus"></span> Add New Item</button>
+			
+			<!--button class="btn btn-lg btn-default btn-block"  ng-hide="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-floppy-disk"></span> Save Order</button-->		 
+			
+			</div>
+			<div class="col-md-5">
+				
+				<div class="row">
+					<div class="col-md-7">
+						<h2 class="text-left">Estimated Weight</h2>
+						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Minimum Weight of 15 lbs]</blockquote>
+					</div>
+					<div class="col-md-5"><h2 class="text-right" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~ {{ orders[orderid].totalweight | number:2 }} lbs</h2></div>
+				</div>			
+				
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="usr">Pick Up Date</label>
+						  <input type="date" class="form-control" id="usr"  ng-disabled="orders[orderid].status === 'placed'">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="usr">Pick Up Time</label>
+						  <input type="time" class="form-control" placeholder="HH:mm:ss" required  ng-disabled="orders[orderid].status === 'placed'" />
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="usr">Drop Off Date</label>
+						  <input type="date" class="form-control" id="usr"  ng-disabled="orders[orderid].status === 'placed'">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="usr">Drop Off Time</label>
+						  <input type="time" class="form-control" placeholder="HH:mm:ss" required  ng-disabled="orders[orderid].status === 'placed'"/>
+						</div>
+					</div>
+				</div>
+				
+						<div class="form-group">
+							  <label for="comment">Special Instructions:</label>
+							  <textarea class="form-control" rows="5" id="comment" ng-disabled="orders[orderid].status === 'placed'"></textarea>
+						</div>
+						
+				<div class="row">
+					<div class="col-md-8">
+						<h2 class="text-left">Total Price</h2>
+						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Price is Estimated]</blockquote>
+					</div>
+					<div class="col-md-4"><h2 class="text-right">{{ orders[orderid].totalweight * 10 | currency }}</h2></div>
+				</div>			
+
+				 <button class="btn btn-lg btn-block btn-success" ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-shopping-cart"></span> Place Order</button>		
+				
+			</div>
+		  </div>
+	</div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
