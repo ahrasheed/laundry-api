@@ -242,7 +242,7 @@ class LaundryApi(remote.Service):
         current_user = user_key.get()
         print current_user.username
 
-        q = [o.to_message() for o in OrderStore.query(OrderStore.user.username == current_user.username).fetch()]
+        q = [o.to_message(idx) for idx, o in enumerate(OrderStore.query(OrderStore.user.username == current_user.username).fetch())]
         print q
         o_list = OrderList(orderlist=q)
         return o_list

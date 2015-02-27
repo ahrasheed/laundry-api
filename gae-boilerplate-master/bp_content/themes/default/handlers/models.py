@@ -36,6 +36,7 @@ class Order(messages.Message):
     orderplacedtime = message_types.DateTimeField(8)
     status = messages.StringField(9)
     comments = messages.StringField(10)
+    ordercounter = messages.IntegerField(11)
 
 
 # class StatusChange(messages.Message):
@@ -113,7 +114,7 @@ class OrderStore(ndb.Model):
             total += item.weight
         return total
 
-    def to_message(self):
+    def to_message(self, index):
         """Turns the Order into a message"""
         itemsie = [ItemCount(name=item.name, number=item.number, weight=item.weight, rate=item.rate) for item in self.items]
 
@@ -126,7 +127,8 @@ class OrderStore(ndb.Model):
                       droptime=self.droptime,
                       orderplacedtime=self.orderplacedtime,
                       status=self.status,
-                      comments=self.comments
+                      comments=self.comments,
+                      ordercounter=index
                       )
         return order
 
@@ -135,33 +137,33 @@ class OrderStore(ndb.Model):
         # add checks for completion here if necessary
         self.status = status
 
-    def update_from_message(self, message):
-        """Update incomplete orders"""
-        if message.items:
-            itemsie = []
-            for item in message.items:
-                i = ItemStore.query(ItemStore.itemid == item.itemid).get()
-                if i:
-                    itemsie.append(ItemCountStore(name=i.name, number=item.number, weight=i.weight, rate=i.rate))
-            self.items = itemsie
+    # def update_from_message(self, message):
+    #     """Update incomplete orders"""
+    #     if message.items:
+    #         itemsie = []
+    #         for item in message.items:
+    #             i = ItemStore.query(ItemStore.itemid == item.itemid).get()
+    #             if i:
+    #                 itemsie.append(ItemCountStore(name=i.name, number=item.number, weight=i.weight, rate=i.rate))
+    #         self.items = itemsie
 
-        if message.pickuplocation:
-            self.pickuplocation = message.pickuplocation
+    #     if message.pickuplocation:
+    #         self.pickuplocation = message.pickuplocation
 
-        if message.pickuptime:
-            self.pickuptime = message.pickuptime
+    #     if message.pickuptime:
+    #         self.pickuptime = message.pickuptime
 
-        if message.droplocation:
-            self.droplocation = message.droplocation
+    #     if message.droplocation:
+    #         self.droplocation = message.droplocation
 
-        if message.droptime:
-            self.droptime = message.droptime
+    #     if message.droptime:
+    #         self.droptime = message.droptime
 
-        if message.orderplacedtime:
-            self.orderplacedtime = message.orderplacedtime
+    #     if message.orderplacedtime:
+    #         self.orderplacedtime = message.orderplacedtime
 
-        if message.comments:
-            self.comments = message.comments
+    #     if message.comments:
+    #         self.comments = message.comments
 
     @classmethod
     def put_from_message(cls, message):
