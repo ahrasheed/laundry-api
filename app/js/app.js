@@ -1,8 +1,9 @@
 (function() {
   var app = angular.module('easyLaundry', []);
 
-  app.controller('LaundryItems', function($scope){
-  
+  app.controller('LaundryItems', function($scope,$http){
+
+		
 	  $scope.orderid = 0;
 	  $scope.orders = [
 	  	{
@@ -45,29 +46,35 @@
 		return $scope.orderid === oid;
 	  };
 	
+	
+	  
+   /* $http.get('todos.json').then(function(res){
+          $scope.todos = res.data;                
+        });*/
+	
 	  $scope.laundryweights = [
       {
-        itemtype: 'Shirt',
+        name: 'Shirt',
         weight: 1.4
 	  },
       {
-        itemtype: 'Trouser',
+        name: 'Trouser',
         weight: 2.3
 	  },
       {
-        itemtype: 'Underwear',
+        name: 'Underwear',
         weight: 0.4
 	  },	  
       {
-        itemtype: 'Bra',
+        name: 'Bra',
         weight: 0.5
 	  },	
       {
-        itemtype: 'Socks',
+        name: 'Socks',
         weight: 0.2
 	  },
       {
-        itemtype: 'Waist',
+        name: 'Waist',
         weight: 0.3
 	  }		  
     ]; 
@@ -75,7 +82,7 @@
 
     $scope.neworderItem = function(){
 	
-        $scope.orders[$scope.orderid].orderitems.push({name:$scope.name.itemtype, weight:$scope.name.weight, quantity:$scope.quantity});
+        $scope.orders[$scope.orderid].orderitems.push({name:$scope.name.name, weight:$scope.name.weight, quantity:$scope.quantity});
         $scope.name = '';
         $scope.quantity = '';
 		$scope.orders[$scope.orderid].totalweight = 0;

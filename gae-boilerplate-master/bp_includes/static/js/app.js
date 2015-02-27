@@ -11,44 +11,45 @@
 
   app.controller('LaundryItems', function($scope, $http){
   
-  	$http.get('http://laundry4me.com/json.php').success(function(data, status, headers, config) { $scope.laundryweights = data; }).error(function(data, status, headers, config) {});	
-    //  $http.get("http://laundry4me.com/json2.php").success(function(response) {$scope.names = response;});		
-     // $http.get("http://www.w3schools.com/website/Customers_JSON.php").success(function(response) {$scope.names = response;});		
-	//$http.get("http://www.laundry4me.com/json.php").success(function(response) {$scope.names = response;});		
+	// Get All Item Types, Rates and Weights
+  	$http.get('_ah/api/laundry_api/v1/items').success(function(data, status, headers, config) { $scope.laundryweights = data.itemlist; }).error(function(data, status, headers, config) {});	
 		
+	//Get All Orders
+	$http.get('_ah/api/laundry_api/v1/orders').success(function(data, status, headers, config) { $scope.orders = data.orderlist; }).error(function(data, status, headers, config) {});	
+	
 	  $scope.orderid = 0;
-	  $scope.orders = [
+	  /*$scope.orders = [
 	  	{
-			id: 0,
+			orderkey: 0,
 			date: 'New Order',
-			orderitems: [],
+			items: [],
 			totalweight: 0,
 			status: 'new'
 		  },
 		  {
-			id: 1,
+			orderkey: 1,
 			date: 'Oct 14, 2014',
-			orderitems: [
-			{ name: 'Shirt', weight: 1.4, quantity: 4 }
+			items: [
+			{ name: 'Shirt', weight: 1.4, number: 4 }
 			],
 			totalweight: (1.4*4),
 			status: 'placed'
 		  },
 		  {
-			id: 2,
+			orderkey: 2,
 			date: 'Oct 24, 2014',
-			orderitems: [],
+			items: [],
 			totalweight: 0,
 			status: 'new'
 		  },
 		  {
-			id: 3,
+			orderkey: 3,
 			date: 'Nov 1, 2014',
-			orderitems: [],
+			items: [],
 			totalweight: 0,
 			status: 'placed'
 		  }
-	  ];
+	  ];*/
 	  
 	  $scope.selectOrder = function(oid){
 		$scope.orderid = oid;
@@ -63,52 +64,32 @@
       {
         itemtype: 'Shirt',
         weight: 1.4
-	  },
-      {
-        itemtype: 'Trouser',
-        weight: 2.3
-	  },
-      {
-        itemtype: 'Underwear',
-        weight: 0.4
-	  },	  
-      {
-        itemtype: 'Bra',
-        weight: 0.5
-	  },	
-      {
-        itemtype: 'Socks',
-        weight: 0.2
-	  },
-      {
-        itemtype: 'Waist',
-        weight: 0.3
-	  }		  
+	  } 
     ]; */
 	
 
     $scope.neworderItem = function(){
 	
-        $scope.orders[$scope.orderid].orderitems.push({name:$scope.name.itemtype, weight:$scope.name.weight, quantity:$scope.quantity});
+        $scope.orders[$scope.orderid].items.push({name:$scope.name.name, weight:$scope.name.weight, number:$scope.number});
         $scope.name = '';
-        $scope.quantity = '';
+        $scope.number = '';
 		$scope.orders[$scope.orderid].totalweight = 0;
 		
-		for (i in $scope.orders[$scope.orderid].orderitems){
-			$scope.orders[$scope.orderid].totalweight += $scope.orders[$scope.orderid].orderitems[i].weight * $scope.orders[$scope.orderid].orderitems[i].quantity;
+		for (i in $scope.orders[$scope.orderid].items){
+			$scope.orders[$scope.orderid].totalweight += $scope.orders[$scope.orderid].items[i].weight * $scope.orders[$scope.orderid].items[i].number;
 		}
 		
     };
 	
     $scope.remove=function(item){ 
 	
-		var index=$scope.orders[$scope.orderid].orderitems.indexOf(item)	  
-		$scope.orders[$scope.orderid].orderitems.splice(index,1);     
+		var index=$scope.orders[$scope.orderid].items.indexOf(item)	  
+		$scope.orders[$scope.orderid].items.splice(index,1);     
 	  
 		$scope.orders[$scope.orderid].totalweight = 0;
 		
-		for (i in $scope.orders[$scope.orderid].orderitems){
-			$scope.orders[$scope.orderid].totalweight += $scope.orders[$scope.orderid].orderitems[i].weight * $scope.orders[$scope.orderid].orderitems[i].quantity;
+		for (i in $scope.orders[$scope.orderid].items){
+			$scope.orders[$scope.orderid].totalweight += $scope.orders[$scope.orderid].items[i].weight * $scope.orders[$scope.orderid].items[i].number;
 		}
 	  
     };

@@ -10,15 +10,8 @@
 			<div class="col-md-2 sidebar">	
 			<h2>My Orders {[{ testdata.test }]}</h2> 
 			          <ul class="nav nav-pills nav-stacked">
-						<li ng-repeat="ordertag in orders" ng-class="{ active:isOrder(ordertag.id) }"><a href="#" ng-click="selectOrder(ordertag.id)">{[{ ordertag.date }]}</a></li>
+						<li ng-repeat="ordertag in orders" ng-class="{ active:isOrder(ordertag.orderkey) }"><a href="#" ng-click="selectOrder(ordertag.orderkey)">{[{ ordertag.orderkey }]}</a></li>
 					  </ul>		
-					  
-					  <!--ul>
-						  <li ng-repeat="x in names">
-							{[{ x.itemtype }]}
-						  </li>
-					  </ul-->
-
 			</div>
 			<div class="col-md-5">
 			
@@ -27,10 +20,10 @@
 				 <div class="table-responsive">          
 					  <table class="table item-table">
 						<tbody>
-						  <tr ng-repeat="item in orders[orderid].orderitems">
+						  <tr ng-repeat="item in orders[orderid].items">
 							<td>{[{ item.name }]}</td>
 							<td>~ {[{ item.weight }]} lbs</td>
-							<td>{[{ item.quantity }]}</td>							
+							<td>{[{ item.number }]}</td>							
 							<td width="56"><button ng-hide="orders[orderid].status === 'placed'" class="btn btn-default btn-block" type="button" ng-click="remove(item)"><span class="glyphicon glyphicon-remove"></span></button></td>
 						  </tr>
 						</tbody>
@@ -41,13 +34,13 @@
 			<div class="row">
 				<div class="col-md-6">
 					<label>Item Type</label>
-					<select class="form-control" ng-model="name" ng-options="laundryweight.itemtype for laundryweight in laundryweights">
+					<select class="form-control" ng-model="name" ng-options="laundryweight.name for laundryweight in laundryweights">
 						<option value="">--- Select an Item ---</option>				
 					</select>
 				</div>
 				<div class="col-md-6">
 					<label>Quantity</label>
-					<input type="number" class="form-control" min="1" max="99" ng-model="quantity" placeholder="Quantity" ng-required />
+					<input type="number" class="form-control" min="1" max="99" ng-model="number" placeholder="Quantity" ng-required />
 				</div>			
 			</div>
 			<div class="row">
