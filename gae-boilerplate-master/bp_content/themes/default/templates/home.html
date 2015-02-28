@@ -10,7 +10,7 @@
 			<div class="col-md-2 sidebar">	
 			<h2>My Orders {[{ testdata.test }]}</h2> 
 			          <ul class="nav nav-pills nav-stacked">
-						<li ng-repeat="ordertag in orders" ng-class="{ active:isOrder(ordertag.orderkey) }"><a href="#" ng-click="selectOrder(ordertag.orderkey)">{[{ ordertag.orderkey }]}</a></li>
+						<li ng-repeat="ordertag in orders" ng-class="{ active:isOrder(ordertag.ordercounter) }"><a href="#" ng-click="selectOrder(ordertag.ordercounter)">{[{ ordertag.ordercounter }]}</a></li>
 					  </ul>		
 			</div>
 			<div class="col-md-5">

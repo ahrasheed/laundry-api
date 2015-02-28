@@ -8,7 +8,6 @@
    	delete $httpProvider.defaults.headers.common['X-Requested-With'];
 }])
 
-
   app.controller('LaundryItems', function($scope, $http){
   
 	// Get All Item Types, Rates and Weights
@@ -25,29 +24,6 @@
 			items: [],
 			totalweight: 0,
 			status: 'new'
-		  },
-		  {
-			orderkey: 1,
-			date: 'Oct 14, 2014',
-			items: [
-			{ name: 'Shirt', weight: 1.4, number: 4 }
-			],
-			totalweight: (1.4*4),
-			status: 'placed'
-		  },
-		  {
-			orderkey: 2,
-			date: 'Oct 24, 2014',
-			items: [],
-			totalweight: 0,
-			status: 'new'
-		  },
-		  {
-			orderkey: 3,
-			date: 'Nov 1, 2014',
-			items: [],
-			totalweight: 0,
-			status: 'placed'
 		  }
 	  ];*/
 	  
