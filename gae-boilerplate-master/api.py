@@ -25,76 +25,6 @@
 # class LaundryApi(remote.Service):
 #     """Laundry API v1."""
 
-    # @endpoints.method(message_types.VoidMessage, OrderList,
-    #                   path='orders', http_method='GET',
-    #                   name='laundry.getAllOrders')
-    # def order_list(self, unused_request):
-
-    #     # if orderstorelist:
-    #     q = [o.to_message() for o in OrderStore.query().fetch()]
-    #     print q
-    #     o_list = OrderList(orderlist=q)
-    #     return o_list
-
-#     @endpoints.method(message_types.VoidMessage, ItemList,
-#                       path='items', http_method='GET',
-#                       name='laundry.getAllItems')
-#     def item_list(self, unused_request):
-#         q = [i.to_message() for i in ItemStore.query().fetch()]
-#         print q
-#         i_list = ItemList(itemlist=q)
-#         return i_list
-
-#     # ID_RESOURCE = endpoints.ResourceContainer(message_types.VoidMessage,
-#     #                                           id=messages.IntegerField(1, variant=messages.Variant.INT32))
-
-#     # @endpoints.method(ID_RESOURCE, Order,
-#     #                   path='orders/{id}', http_method='GET',
-#     #                   name='laundry.getOrder')
-#     # def order_get(self, request):
-
-#     #     q = OrderStore.query(OrderStore.order.orderid == request.id).get()
-#     #     if q is None:
-#     #         raise endpoints.NotFoundException('Order %s not found.' %
-#     #                                           (request.id,))
-#     #     else:
-#     #         return q.order
-
-#     # STATUS_RESOURCE = endpoints.ResourceContainer(
-#     #         StatusChange, id=messages.IntegerField(1, variant=messages.Variant.INT32))
-
-#     # @endpoints.method(STATUS_RESOURCE, message_types.VoidMessage,
-#     #                   path='orders/{id}', http_method='POST',
-#     #                   name='laundry.statusChange')
-#     # def status_change(self, request):
-#     #     o = OrderStore.query(OrderStore.order.orderid == request.id).get()
-#     #     o.order.status = request.status
-#     #     o.put()
-#     #     return message_types.VoidMessage()
-
-#     @endpoints.method(Order, message_types.VoidMessage,
-#                       path='placeorder', http_method='POST',
-#                       name='laundry.placeOrder')
-#     def place_order(self, request):
-#         if request.orderkey and request.status:
-#             if request.status == 'INCOMPLETE':
-#                 key = ndb.Key(OrderStore, request.orderkey)
-#                 o = key.get()
-#                 print o
-#                 o.update_from_message(request)
-#                 return message_types.VoidMessage()
-#         o = OrderStore.put_from_message(request)
-#         if o:
-#             return message_types.VoidMessage()
-
-#     @endpoints.method(Item, message_types.VoidMessage,
-#                       path='additem', http_method='POST',
-#                       name='laundry.addItem')
-#     def add_item(self, request):
-#         i = ItemStore.put_from_message(request)
-#         if i:
-#             return message_types.VoidMessage()
-
 import Cookie
 import logging
 import endpoints
@@ -262,7 +192,8 @@ class LaundryApi(remote.Service):
                       path='additem', http_method='POST',
                       name='laundry.addItem')
     def add_item(self, request):
-        i = ItemStore.put_from_message(request)
+
+        i = ItemStore.put_from_message(request, current_user)
         if i:
             return message_types.VoidMessage()
 
@@ -277,7 +208,17 @@ class LaundryApi(remote.Service):
         #         print o
         #         o.update_from_message(request)
         #         return message_types.VoidMessage()
-        o = OrderStore.put_from_message(request)
+
+        self.get_user_from_cookie()
+
+        if not self.user:
+            raise endpoints.UnauthorizedException('Invalid token.')
+
+        userkey_id = self.user['user_id']
+        user_key = ndb.Key('User', userkey_id)
+        current_user = user_key.get()
+        print current_user.username
+        o = OrderStore.put_from_message(request, current_user)
         if o:
             return message_types.VoidMessage()
 

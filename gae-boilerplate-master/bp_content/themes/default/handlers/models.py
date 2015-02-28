@@ -27,16 +27,15 @@ class ItemCount(messages.Message):
 class Order(messages.Message):
     """Collection of clothes ordered by a user"""
     orderkey = messages.IntegerField(1)
-    username = messages.StringField(2)
-    items = messages.MessageField(ItemCount, 3, repeated=True)
-    pickuplocation = messages.StringField(4)
-    pickuptime = message_types.DateTimeField(5)
-    droplocation = messages.StringField(6)
-    droptime = message_types.DateTimeField(7)
-    orderplacedtime = message_types.DateTimeField(8)
-    status = messages.StringField(9)
-    comments = messages.StringField(10)
-    ordercounter = messages.IntegerField(11)
+    items = messages.MessageField(ItemCount, 2, repeated=True)
+    pickuplocation = messages.StringField(3)
+    pickuptime = message_types.DateTimeField(4)
+    droplocation = messages.StringField(5)
+    droptime = message_types.DateTimeField(6)
+    orderplacedtime = message_types.DateTimeField(7)
+    status = messages.StringField(8)
+    comments = messages.StringField(9)
+    ordercounter = messages.IntegerField(10)
 
 
 # class StatusChange(messages.Message):
@@ -119,7 +118,6 @@ class OrderStore(ndb.Model):
         itemsie = [ItemCount(name=item.name, number=item.number, weight=item.weight, rate=item.rate) for item in self.items]
 
         order = Order(orderkey=self.key.id(),
-                      username=self.user.username,
                       items=itemsie,
                       pickuplocation=self.pickuplocation,
                       pickuptime=self.pickuptime,
@@ -166,7 +164,7 @@ class OrderStore(ndb.Model):
     #         self.comments = message.comments
 
     @classmethod
-    def put_from_message(cls, message):
+    def put_from_message(cls, message, user):
         """Insert order from message."""
         itemsie = []
         if message.items:
@@ -176,7 +174,7 @@ class OrderStore(ndb.Model):
                 i = i_key.get()
                 if i:
                     itemsie.append(ItemCountStore(name=i.name, number=item.number, weight=i.weight, rate=i.rate))
-        user = User.query(User.username == message.username).fetch()[0]
+
         order = cls(user=user,
                     items=itemsie,
                     pickuplocation=message.pickuplocation,
