@@ -5,12 +5,16 @@
 {% block content %}
 
     {% if user_id %}
+	<div class="alert alert-success" ng-show="showSuccessAlert">
+		<button type="button" class="close" data-ng-click="switchBool('showSuccessAlert')" >×</button>
+		<strong>Done!</strong> {[{successTextAlert}]}
+	</div>
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2 sidebar">	
 			<h2>My Orders {[{ testdata.test }]}</h2> 
 			          <ul class="nav nav-pills nav-stacked">
-						<li ng-repeat="ordertag in orders" ng-class="{ active:isOrder(ordertag.ordercounter) }"><a href="#" ng-click="selectOrder(ordertag.ordercounter)">{[{ ordertag.ordercounter }]}</a></li>
+						<li ng-repeat="ordertag in orders" ng-class="{ active:isOrder(ordertag.ordercounter) }"><a href="#" ng-click="selectOrder(ordertag.ordercounter)">{[{ ordertag.tabname }]}</a></li>
 					  </ul>		
 			</div>
 			<div class="col-md-5">
@@ -96,7 +100,7 @@
 				
 						<div class="form-group">
 							  <label for="comment">Special Instructions:</label>
-							  <textarea class="form-control" rows="5" id="comment" ng-disabled="orders[orderid].status === 'placed'"></textarea>
+							  <textarea class="form-control" rows="5" id="comment" ng-model="orders[orderid].comments" ng-disabled="orders[orderid].status === 'placed'"></textarea>
 						</div>
 						
 				<div class="row">
@@ -107,7 +111,7 @@
 					<div class="col-md-4"><h2 class="text-right">{[{ orders[orderid].totalweight * 10 | currency }]}</h2></div>
 				</div>			
 
-				 <button class="btn btn-lg btn-block btn-success" ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-shopping-cart"></span> Place Order</button>		
+				 <button class="btn btn-lg btn-block btn-success" ng-click="placeorder()" ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-shopping-cart"></span> Place Order</button>		
 				
 			</div>
 		  </div>

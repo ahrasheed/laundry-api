@@ -8,13 +8,26 @@
    	delete $httpProvider.defaults.headers.common['X-Requested-With'];
 }])
 
-  app.controller('LaundryItems', function($scope, $http){
-  
+	app.controller('LaundryItems', function($scope, $http, $timeout){  
+		
+		$scope.successTextAlert = "Empty content";
+		$scope.showSuccessAlert = false;
+
+		$scope.switchBool = function(value) {
+		$scope[value] = !$scope[value];
+	};  
+
+    //$scope.initialize = function(){	
 	// Get All Item Types, Rates and Weights
   	$http.get('_ah/api/laundry_api/v1/items').success(function(data, status, headers, config) { $scope.laundryweights = data.itemlist; }).error(function(data, status, headers, config) {});	
-		
+			
+	$scope.orders = [{  ordercounter: 0, tabname:"New Order", items: [] }];	//var ar3 = ar1.concat(ar2);
 	//Get All Orders
-	$http.get('_ah/api/laundry_api/v1/orders').success(function(data, status, headers, config) { $scope.orders = data.orderlist; }).error(function(data, status, headers, config) {});	
+	$http.get('_ah/api/laundry_api/v1/orders').success(function(data, status, headers, config) { $scope.orders = $scope.orders.concat(data.orderlist); }).error(function(data, status, headers, config) {});	
+	
+	//};
+	
+//	timeout( function(){ $scope.initialize(); }, 1000);
 	
 	  $scope.orderid = 0;
 	  /*$scope.orders = [
@@ -46,7 +59,7 @@
 
     $scope.neworderItem = function(){
 	
-        $scope.orders[$scope.orderid].items.push({name:$scope.name.name, weight:$scope.name.weight, number:$scope.number});
+        $scope.orders[$scope.orderid].items.push({name:$scope.name.name, weight:$scope.name.weight, itemkey:$scope.name.itemkey, number:$scope.number});
         $scope.name = '';
         $scope.number = '';
 		$scope.orders[$scope.orderid].totalweight = 0;
@@ -69,6 +82,23 @@
 		}
 	  
     };
+	
+	//$scope.orderform = {comments: "Asad"};
+
+   $scope.placeorder=function(item){	
+		$http.post('_ah/api/laundry_api/v1/placeorder', $scope.orders[0]).success(function(data, status, headers, config) { $scope.showSuccessAlert = true; $scope.successTextAlert = "Order Placed"; 
+		
+			
+			
+			$scope.orders = [{  ordercounter: 0, tabname:"New Order", items: [] }];	//var ar3 = ar1.concat(ar2);
+			//Get All Orders
+			$http.get('_ah/api/laundry_api/v1/orders').success(function(data, status, headers, config) { $scope.orders = $scope.orders.concat(data.orderlist); }).error(function(data, status, headers, config) {});	
+		
+		}).error(function(data, status, headers, config) { });
+		
+
+    };
+	
 	
   });  
 	
