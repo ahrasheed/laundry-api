@@ -3,6 +3,7 @@ from google.appengine.ext import ndb
 from protorpc import messages
 from protorpc import message_types
 from bp_includes.models import User
+from datetime import datetime
 
 # ----- MESSAGES ------
 
@@ -181,7 +182,7 @@ class OrderStore(ndb.Model):
                     pickuptime=message.pickuptime,
                     droplocation=message.droplocation,
                     droptime=message.droptime,
-                    orderplacedtime=message.orderplacedtime,
+                    orderplacedtime=datetime.utcnow(),
                     status=message.status,
                     comments=message.comments
                     )

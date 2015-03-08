@@ -172,7 +172,7 @@ class LaundryApi(remote.Service):
         current_user = user_key.get()
         print current_user.username
 
-        q = [o.to_message(idx+1) for idx, o in enumerate(OrderStore.query(OrderStore.user.username == current_user.username).fetch())]
+        q = [o.to_message(idx+1) for idx, o in enumerate(OrderStore.query(OrderStore.user.username == current_user.username).order(OrderStore.orderplacedtime).fetch())]
         print q
         o_list = OrderList(orderlist=q)
         return o_list
@@ -213,13 +213,12 @@ class LaundryApi(remote.Service):
         print current_user.username
         o = OrderStore.put_from_message(request, current_user)
         if o:
-            #return message_types.VoidMessage()		
-			import time
-			time.sleep(1)
-			q = [o.to_message(idx+1) for idx, o in enumerate(OrderStore.query(OrderStore.user.username == current_user.username).fetch())]
-			print q
-			o_list = OrderList(orderlist=q)
-			return o_list
+            import time
+            time.sleep(1)
+            q = [o.to_message(idx+1) for idx, o in enumerate(OrderStore.query(OrderStore.user.username == current_user.username).order(OrderStore.orderplacedtime).fetch())]
+            print q
+            o_list = OrderList(orderlist=q)
+            return o_list
 
     @endpoints.method(message_types.VoidMessage, TestMessage,
                       path='testing', http_method='GET',
