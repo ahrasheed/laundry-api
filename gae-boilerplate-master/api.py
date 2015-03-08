@@ -197,17 +197,10 @@ class LaundryApi(remote.Service):
         if i:
             return message_types.VoidMessage()
 
-    @endpoints.method(Order, message_types.VoidMessage,
+    @endpoints.method(Order, OrderList,
                       path='placeorder', http_method='POST',
                       name='laundry.placeOrder')
     def place_order(self, request):
-        # if request.orderkey and request.status:
-        #     if request.status == 'INCOMPLETE':
-        #         key = ndb.Key(OrderStore, request.orderkey)
-        #         o = key.get()
-        #         print o
-        #         o.update_from_message(request)
-        #         return message_types.VoidMessage()
 
         self.get_user_from_cookie()
 
@@ -220,8 +213,13 @@ class LaundryApi(remote.Service):
         print current_user.username
         o = OrderStore.put_from_message(request, current_user)
         if o:
-            return message_types.VoidMessage()
-
+            #return message_types.VoidMessage()		
+			import time
+			time.sleep(1)
+			q = [o.to_message(idx+1) for idx, o in enumerate(OrderStore.query(OrderStore.user.username == current_user.username).fetch())]
+			print q
+			o_list = OrderList(orderlist=q)
+			return o_list
 
     @endpoints.method(message_types.VoidMessage, TestMessage,
                       path='testing', http_method='GET',

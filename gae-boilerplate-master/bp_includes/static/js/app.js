@@ -21,7 +21,7 @@
 	// Get All Item Types, Rates and Weights
   	$http.get('_ah/api/laundry_api/v1/items').success(function(data, status, headers, config) { $scope.laundryweights = data.itemlist; }).error(function(data, status, headers, config) {});	
 			
-	$scope.orders = [{  ordercounter: 0, tabname:"New Order", items: [] }];	//var ar3 = ar1.concat(ar2);
+	$scope.orders = [{  ordercounter: 0, tabname:"New Order", comments:"New Order", items: [] }];	//var ar3 = ar1.concat(ar2);
 	//Get All Orders
 	$http.get('_ah/api/laundry_api/v1/orders').success(function(data, status, headers, config) { $scope.orders = $scope.orders.concat(data.orderlist); }).error(function(data, status, headers, config) {});	
 	
@@ -86,11 +86,10 @@
 	//$scope.orderform = {comments: "Asad"};
 
    $scope.placeorder=function(item){	
+		//$scope.orders = [{  ordercounter: 0, tabname:"New Order", items: [] }];
 		$http.post('_ah/api/laundry_api/v1/placeorder', $scope.orders[0]).success(function(data, status, headers, config) { $scope.showSuccessAlert = true; $scope.successTextAlert = "Order Placed"; 
-		
-			
-			
-			$scope.orders = [{  ordercounter: 0, tabname:"New Order", items: [] }];	//var ar3 = ar1.concat(ar2);
+					
+			$scope.orders = [{  ordercounter: 0, comments:"New Order", tabname:"New Order", items: [] }];	//var ar3 = ar1.concat(ar2);
 			//Get All Orders
 			$http.get('_ah/api/laundry_api/v1/orders').success(function(data, status, headers, config) { $scope.orders = $scope.orders.concat(data.orderlist); }).error(function(data, status, headers, config) {});	
 		
