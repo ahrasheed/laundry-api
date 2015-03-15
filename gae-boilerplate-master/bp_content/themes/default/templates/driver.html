@@ -45,7 +45,6 @@
 					  </table>
 					  </div>
 
-			<div>
 			<form ng-show="addform" ng-submit="neworderItem()">
 			<div class="row">
 				<div class="col-md-6">
@@ -68,7 +67,7 @@
 			</form>
 			
 			<button ng-hide="addform" class="btn btn-success btn-block" ng-click="addform = true"  ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-plus"></span> Add New Item</button>
-			</div>
+	
 			</div>
 			
 			<div class="col-md-4" ng-switch on="orderid">
