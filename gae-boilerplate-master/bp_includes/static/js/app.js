@@ -30,7 +30,7 @@
 //	timeout( function(){ $scope.initialize(); }, 1000);
 	
 	  $scope.orderid = 0;
-	
+	  $scope.orders[$scope.orderid].totalweight = 0;	
 
 	
 	  $scope.timeoptions = [
@@ -83,18 +83,18 @@
 	  {timevalue: '23:00'},
 	  {timevalue: '23:30'}
 	  ];
-	  /*$scope.orders = [
-	  	{
-			orderkey: 0,
-			date: 'New Order',
-			items: [],
-			totalweight: 0,
-			status: 'new'
-		  }
-	  ];*/
+
 	  
 	  $scope.selectOrder = function(oid){
 		$scope.orderid = oid;
+		
+		$scope.orders[$scope.orderid].totalweight = 0;
+		$scope.orders[$scope.orderid].totalbill = 0;
+		
+		for (i in $scope.orders[$scope.orderid].items){
+			$scope.orders[$scope.orderid].totalweight += $scope.orders[$scope.orderid].items[i].weight * $scope.orders[$scope.orderid].items[i].number;
+			$scope.orders[$scope.orderid].totalbill += $scope.orders[$scope.orderid].items[i].weight * $scope.orders[$scope.orderid].items[i].number * $scope.orders[$scope.orderid].items[i].rate;
+		}
 	  };
 	  
 	  $scope.isOrder = function(oid){
@@ -109,16 +109,27 @@
 	  } 
     ]; */
 	
-
+	$scope.pricerefresh = function(){		
+		$scope.orders[$scope.orderid].totalweight = 0;
+		$scope.orders[$scope.orderid].totalbill = 0;
+		
+		for (i in $scope.orders[$scope.orderid].items){
+			$scope.orders[$scope.orderid].totalweight += $scope.orders[$scope.orderid].items[i].weight * $scope.orders[$scope.orderid].items[i].number;
+			$scope.orders[$scope.orderid].totalbill += $scope.orders[$scope.orderid].items[i].weight * $scope.orders[$scope.orderid].items[i].number * $scope.orders[$scope.orderid].items[i].rate;
+		}
+	};
+	
     $scope.neworderItem = function(){
 	
         $scope.orders[$scope.orderid].items.push({name:$scope.name.name, weight:$scope.name.weight, itemkey:$scope.name.itemkey, number:$scope.number});
         $scope.name = '';
         $scope.number = '';
 		$scope.orders[$scope.orderid].totalweight = 0;
+		$scope.orders[$scope.orderid].totalbill = 0;
 		
 		for (i in $scope.orders[$scope.orderid].items){
 			$scope.orders[$scope.orderid].totalweight += $scope.orders[$scope.orderid].items[i].weight * $scope.orders[$scope.orderid].items[i].number;
+			$scope.orders[$scope.orderid].totalbill += $scope.orders[$scope.orderid].items[i].weight * $scope.orders[$scope.orderid].items[i].number * $scope.orders[$scope.orderid].items[i].rate;
 		}
 		
     };
@@ -129,15 +140,14 @@
 		$scope.orders[$scope.orderid].items.splice(index,1);     
 	  
 		$scope.orders[$scope.orderid].totalweight = 0;
+		$scope.orders[$scope.orderid].totalbill = 0;
 		
 		for (i in $scope.orders[$scope.orderid].items){
 			$scope.orders[$scope.orderid].totalweight += $scope.orders[$scope.orderid].items[i].weight * $scope.orders[$scope.orderid].items[i].number;
+			$scope.orders[$scope.orderid].totalbill += $scope.orders[$scope.orderid].items[i].weight * $scope.orders[$scope.orderid].items[i].number * $scope.orders[$scope.orderid].items[i].rate;
 		}
 	  
     };
-	
-
-		
 
    $scope.placeorder=function(item){	
 		

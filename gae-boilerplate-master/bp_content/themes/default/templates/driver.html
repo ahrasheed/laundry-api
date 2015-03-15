@@ -11,176 +11,50 @@
 	</div>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-3 sidebar">	
-			<h2>My Orders {[{ testdata.test }]}</h2> 
-			          <ul class="nav nav-pills nav-stacked">
-						<li ng-repeat="ordertag in orders" ng-switch on="ordertag.ordercounter" ng-class="{ active:isOrder(ordertag.ordercounter) }">
-							<a href="#" ng-switch-default ng-click="selectOrder(ordertag.ordercounter)">{[{ ordertag.orderplacedtime | date:'medium' }]}</a> 
-							<a href="#" ng-switch-when='0' ng-click="selectOrder(ordertag.ordercounter)">Place New Order</a> 
-						</li>
-					  </ul>		
-			</div>
-			<div class="col-md-5" ng-switch on="orderid">
+			<div class="col-md-12">
 			
-			<h2 ng-switch-default>{[{ orders[orderid].orderplacedtime | date:'medium' }]}</h2> 
-			<h2 ng-switch-when='0'>Place New Order</h2> 
-			
-				<!--div ng-switch-when='0'>
-				</div>
-				<div ng-switch-default class="alert alert-success">
-					<button type="button" class="close" data-ng-click="switchBool('showSuccessAlert')" >×</button>
-					<strong>Order Status</strong> {[{orders[orderid].status}]}
-				</div-->
-				
-				 <div class="table-responsive">          
-					  <table class="table item-table">
-						<tbody>
-						  <tr ng-repeat="item in orders[orderid].items">
-							<td>{[{ item.name }]}</td>
-							<td>~ {[{ item.weight }]} lbs</td>
-							<td>{[{ item.number }]}</td>							
-							<td width="56"><button ng-show="orderid === 0" class="btn btn-default btn-block" type="button" ng-click="remove(item)"><span class="glyphicon glyphicon-remove"></span></button></td>
-						  </tr>
-						</tbody>
-					  </table>
-					  </div>
-
-			<form ng-show="addform" ng-submit="neworderItem()">
-			<div class="row">
-				<div class="col-md-6">
-					<label>Item Type</label>
-					<select class="form-control" ng-model="name" ng-options="laundryweight.name for laundryweight in laundryweights">
-						<option value="">--- Select an Item ---</option>				
-					</select>
-				</div>
-				<div class="col-md-6">
-					<label>Quantity</label>
-					<input type="number" class="form-control" min="1" max="99" ng-model="number" placeholder="Quantity" ng-required />
-				</div>			
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<br/>
-					<button class="btn btn-danger btn-block" type="submit"  ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-plus"></span> Add to list</button>	
-				</div>
-			</div>		
-			</form>
-			
-			<button ng-hide="addform" class="btn btn-success btn-block" ng-click="addform = true"  ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-plus"></span> Add New Item</button>
-	
-			</div>
-			
-			<div class="col-md-4" ng-switch on="orderid">
-				<div ng-switch-when='0'>
-				<div class="row">
-					<div class="col-md-7">
-						<h2 class="text-left">Estimated Weight</h2>
-						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Minimum Weight of 15 lbs]</blockquote>
-					</div>
-					<div class="col-md-5"><h2 class="text-right" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~ {[{ orders[orderid].totalweight | number:2 }]} lbs</h2></div>
-				</div>			
-				
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group">
-						  <label for="usr">Pick Up Date</label>
-						  <input type="date" class="form-control" ng-model="orders[orderid].pudate" placeholder="yyyy-MM-dd" id="usr"  ng-disabled="orders[orderid].status === 'placed'">
-						  <span ng-bind="orders[orderid].pickuptime"></span>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-						<label for="usr">Pick Up Time</label>
-						<select class="form-control" ng-model="orders[orderid].putime" ng-options="timeoption.timevalue for timeoption in timeoptions">
-							<option value="">--- Select Time ---</option>				
-						</select>
-						</div>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group">
-						  <label for="usr">Drop Off Date</label>
-						  <input type="date" class="form-control" ng-model="orders[orderid].dodate" placeholder="yyyy-MM-dd" id="usr"  ng-disabled="orders[orderid].status === 'placed'">
-							<span ng-bind="orders[orderid].droptime"></span>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group">
-						  <label for="usr">Drop Off Time</label>
-						<select class="form-control" ng-model="orders[orderid].dotime" ng-options="timeoption.timevalue for timeoption in timeoptions">
-							<option value="">--- Select Time ---</option>				
-						</select>
-						</div>
-					</div>
-				</div>
-				
-						<div class="form-group">
-							  <label for="comment">Special Instructions:</label>
-							  <textarea class="form-control" rows="5" id="comment" ng-model="orders[orderid].comments" ng-disabled="orders[orderid].status === 'placed'"></textarea>
-						</div>
-						
-				<div class="row">
-					<div class="col-md-8">
-						<h2 class="text-left">Total Price</h2>
-						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Price is Estimated]</blockquote>
-					</div>
-					<div class="col-md-4"><h2 class="text-right">{[{ orders[orderid].totalweight * 10 | currency }]}</h2></div>
-				</div>			
-
-				 <button class="btn btn-lg btn-block btn-success" ng-click="placeorder()" ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-shopping-cart"></span> Place Order</button>		
-				</div>
-				<div ng-switch-default>
-								<div class="row">
-					<div class="col-md-7">
-						<h2 class="text-left">Estimated Weight</h2>
-						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Minimum Weight of 15 lbs]</blockquote>
-					</div>
-					<div class="col-md-5"><h2 class="text-right" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~ {[{ orders[orderid].totalweight | number:2 }]} lbs</h2></div>
-				</div>			
-				
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-						  <label for="usr">Pick Up Time</label><br>
-						  <span style="font-size:20px" ng-bind="orders[orderid].pickuptime | date:'medium'"></span>
-						</div>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-						  <label for="usr">Drop Off Time</label><br>
-						  <span style="font-size:20px" ng-bind="orders[orderid].droptime | date:'medium'"></span>
-						</div>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-						  <label for="usr">Order Status</label><br>
-						  <span ng-bind="orders[orderid].status"></span>
-						</div>
-					</div>
-				</div>
-				
-						<div class="form-group">
-							  <label for="comment">Special Instructions:</label><br>
-							  <span ng-bind="orders[orderid].comments"></span>
-						</div>
-						
-				<div class="row">
-					<div class="col-md-8">
-						<h2 class="text-left">Total Price</h2>
-						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Price is Estimated]</blockquote>
-					</div>
-					<div class="col-md-4"><h2 class="text-right">{[{ orders[orderid].totalweight * 10 | currency }]}</h2></div>
-				</div>			
+			<h2>Drivers Page: Orders</h2> 
 		
-				</div>
+				<div class="dataTable_wrapper">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th>Order Placed Time</th>
+                                            <th>Pick Up Time</th>
+                                            <th>Pick Up Location</th>
+                                            <th>Drop Off Time</th>
+											<th>Drop Off Location</th>
+											<th>Username</th>
+                                            <th>Items</th>
+											<th>Total Weight</th>
+											<th>Total Bill</th>
+											<th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="odd gradeX" ng-repeat="order in orders">									
+                                            <td>{[{ order.orderplacedtime  | date:'medium' }]}</td>
+                                            <td>{[{ order.pickuptime  | date:'medium' }]}</td>
+                                            <td></td>
+                                            <td>{[{ order.droptime | date:'medium'  }]}</td>
+                                            <td></td>						
+                                            <td></td>												
+                                            <td><table>
+											<tr><th>Name </th><th>Weight </th><th>Quantity </th></tr>
+												<tr ng-repeat="item in order.items">							
+												<td>{[{ item.name }]}</td>
+												<td>~ {[{ item.weight }]} lbs</td>
+												<td>x {[{ item.number }]}</td>	</tr>
+											</table></td>
+											<td></td>	
+											<td></td>
+											<td>{[{ order.status  }]}</td>
+										</tr>        
+                                    </tbody>
+                                </table>
+                            </div>
+
+
 			</div>
 		  </div>
 	</div>

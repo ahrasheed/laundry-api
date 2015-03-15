@@ -25,12 +25,6 @@
 			<h2 ng-switch-default>{[{ orders[orderid].orderplacedtime | date:'medium' }]}</h2> 
 			<h2 ng-switch-when='0'>Place New Order</h2> 
 			
-				<!--div ng-switch-when='0'>
-				</div>
-				<div ng-switch-default class="alert alert-success">
-					<button type="button" class="close" data-ng-click="switchBool('showSuccessAlert')" >×</button>
-					<strong>Order Status</strong> {[{orders[orderid].status}]}
-				</div-->
 				
 				 <div class="table-responsive">          
 					  <table class="table item-table">
@@ -62,23 +56,23 @@
 			<div class="row">
 				<div class="col-md-12">
 					<br/>
-					<button class="btn btn-danger btn-block" type="submit"  ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-plus"></span> Add to list</button>	
+					<button class="btn btn-danger btn-block" type="submit"  ng-disabled="orders[orderid].ordercounter > 0"><span class="glyphicon glyphicon-plus"></span> Add to list</button>	
 				</div>
 			</div>		
 			</form>
 			
-			<button ng-hide="addform" class="btn btn-success btn-block" ng-click="addform = true"  ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-plus"></span> Add New Item</button>
+			<button ng-hide="addform" class="btn btn-success btn-block" ng-click="addform = true"  ng-disabled="orders[orderid].ordercounter > 0"><span class="glyphicon glyphicon-plus"></span> Add New Item</button>
 			</div>
 			</div>
 			
 			<div class="col-md-4" ng-switch on="orderid">
 				<div ng-switch-when='0'>
 				<div class="row">
-					<div class="col-md-7">
+					<div class="col-md-6">
 						<h2 class="text-left">Estimated Weight</h2>
 						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Minimum Weight of 15 lbs]</blockquote>
 					</div>
-					<div class="col-md-5"><h2 class="text-right" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~ {[{ orders[orderid].totalweight | number:2 }]} lbs</h2></div>
+					<div class="col-md-6"><h2 class="text-right" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~ {[{ orders[orderid].totalweight | number:2 }]} lbs</h2></div>
 				</div>			
 				
 				<div class="row">
@@ -86,7 +80,7 @@
 						<div class="form-group">
 						  <label for="usr">Pick Up Date</label>
 						  <input type="date" class="form-control" ng-model="orders[orderid].pudate" placeholder="yyyy-MM-dd" id="usr"  ng-disabled="orders[orderid].status === 'placed'">
-						  <span ng-bind="orders[orderid].pickuptime"></span>
+						  <!--span ng-bind="orders[orderid].pickuptime"></span-->
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -104,7 +98,7 @@
 						<div class="form-group">
 						  <label for="usr">Drop Off Date</label>
 						  <input type="date" class="form-control" ng-model="orders[orderid].dodate" placeholder="yyyy-MM-dd" id="usr"  ng-disabled="orders[orderid].status === 'placed'">
-							<span ng-bind="orders[orderid].droptime"></span>
+							<!--span ng-bind="orders[orderid].droptime"></span-->
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -134,11 +128,11 @@
 				</div>
 				<div ng-switch-default>
 								<div class="row">
-					<div class="col-md-7">
+					<div class="col-md-6">
 						<h2 class="text-left">Estimated Weight</h2>
 						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Minimum Weight of 15 lbs]</blockquote>
 					</div>
-					<div class="col-md-5"><h2 class="text-right" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~ {[{ orders[orderid].totalweight | number:2 }]} lbs</h2></div>
+					<div class="col-md-6"><h2 class="text-right" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~ {[{ orders[orderid].totalweight | number:2 }]} lbs</h2></div>
 				</div>			
 				
 				<div class="row">
@@ -178,7 +172,7 @@
 						<h2 class="text-left">Total Price</h2>
 						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Price is Estimated]</blockquote>
 					</div>
-					<div class="col-md-4"><h2 class="text-right">{[{ orders[orderid].totalweight * 10 | currency }]}</h2></div>
+					<div class="col-md-4"><h2 class="text-right">{[{ orders[orderid].totalbill | currency }]}</h2></div>
 				</div>			
 		
 				</div>
