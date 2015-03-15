@@ -1418,6 +1418,17 @@ class HomeRequestHandler(RegisterBaseHandler):
         return self.render_template('home.html', **params)
 
 
+class DriverHandler(BaseHandler):
+    """
+    Handler to show the driver page
+    """
+
+    def get(self):
+        """ Returns a simple HTML form for driver """
+        params = {}
+        return self.render_template('driver.html', **params)
+
+
 class RobotsHandler(BaseHandler):
     def get(self):
         params = {
