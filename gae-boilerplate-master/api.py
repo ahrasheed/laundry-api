@@ -170,10 +170,8 @@ class LaundryApi(remote.Service):
         userkey_id = self.user['user_id']
         user_key = ndb.Key('User', userkey_id)
         current_user = user_key.get()
-        print current_user.username
 
         q = [o.to_message(idx+1) for idx, o in enumerate(OrderStore.query(OrderStore.user.username == current_user.username).order(OrderStore.orderplacedtime).fetch())]
-        print q
         o_list = OrderList(orderlist=q)
         return o_list
 
@@ -183,7 +181,6 @@ class LaundryApi(remote.Service):
     def all_orders(self, request):
 
         q = [o.to_message(idx+1) for idx, o in enumerate(OrderStore.query().order(OrderStore.orderplacedtime).fetch())]
-        print q
         o_list = OrderList(orderlist=q)
         return o_list
 
@@ -193,7 +190,6 @@ class LaundryApi(remote.Service):
                       name='laundry.getAllItems')
     def item_list(self, unused_request):
         q = [i.to_message() for i in ItemStore.query().fetch()]
-        print q
         i_list = ItemList(itemlist=q)
         return i_list
 
@@ -221,31 +217,13 @@ class LaundryApi(remote.Service):
         userkey_id = self.user['user_id']
         user_key = ndb.Key('User', userkey_id)
         current_user = user_key.get()
-        print current_user.username
         o = OrderStore.put_from_message(request, current_user)
         if o:
             import time
             time.sleep(1)
             q = [o.to_message(idx+1) for idx, o in enumerate(OrderStore.query(OrderStore.user.username == current_user.username).order(OrderStore.orderplacedtime).fetch())]
-            print q
             o_list = OrderList(orderlist=q)
             return o_list
-
-    @endpoints.method(message_types.VoidMessage, TestMessage,
-                      path='testing', http_method='GET',
-                      name='testit')
-    def testit(self, request):
-        # return Item(username='testit')
-        self.get_user_from_cookie()
-
-        if not self.user:
-            raise endpoints.UnauthorizedException('Invalid token.')
-
-        userkey_id = self.user['user_id']
-        user_key = ndb.Key('User', userkey_id)
-        user = user_key.get()
-
-        return TestMessage(username=user.username)
 
     @endpoints.method(Status, message_types.VoidMessage,
                       path='changestatus', http_method='POST',
@@ -262,6 +240,22 @@ class LaundryApi(remote.Service):
 
         message = 'No entity with the id "%s" exists.' % request.orderkey
         raise endpoints.NotFoundException(message)
+
+    @endpoints.method(message_types.VoidMessage, TestMessage,
+                      path='testing', http_method='GET',
+                      name='testit')
+    def testit(self, request):
+        # return Item(username='testit')
+        self.get_user_from_cookie()
+
+        if not self.user:
+            raise endpoints.UnauthorizedException('Invalid token.')
+
+        userkey_id = self.user['user_id']
+        user_key = ndb.Key('User', userkey_id)
+        user = user_key.get()
+
+        return TestMessage(username=user.username)
 
 
 APPLICATION = endpoints.api_server([LaundryApi], restricted=False)
