@@ -18,7 +18,7 @@ class Item(messages.Message):
 
 class ItemCount(messages.Message):
     """Individual clothing items"""
-    itemkey = messages.IntegerField(1)
+    itemkey = messages.StringField(1)
     name = messages.StringField(2)
     number = messages.IntegerField(3, default=1, required=True)
     weight = messages.FloatField(4)
@@ -27,7 +27,7 @@ class ItemCount(messages.Message):
 
 class Order(messages.Message):
     """Collection of clothes ordered by a user"""
-    orderkey = messages.IntegerField(1)
+    orderkey = messages.StringField(1)
     items = messages.MessageField(ItemCount, 2, repeated=True)
     pickuplocation = messages.StringField(3)
     pickuptime = message_types.DateTimeField(4)
@@ -37,11 +37,13 @@ class Order(messages.Message):
     status = messages.StringField(8)
     comments = messages.StringField(9)
     ordercounter = messages.IntegerField(10)
+    user = messages.StringField(11)
 
 
-# class StatusChange(messages.Message):
-#     """Status change message"""
-#     status = messages.EnumField(OrderStatus, 1, required=True)
+class Status(messages.Message):
+    """Status change message"""
+    orderkey = messages.StringField(1, required=True)
+    status = messages.StringField(2, required=True)
 
 
 class ItemList(messages.Message):
@@ -74,7 +76,7 @@ class ItemStore(ndb.Model):
     def to_message(self):
         """Turns the Order into a message"""
 
-        item = Item(itemkey=self.key.id(),
+        item = Item(itemkey=self.key.urlsafe(),
                     name=self.name,
                     weight=self.weight,
                     rate=self.rate
@@ -118,7 +120,7 @@ class OrderStore(ndb.Model):
         """Turns the Order into a message"""
         itemsie = [ItemCount(name=item.name, number=item.number, weight=item.weight, rate=item.rate) for item in self.items]
 
-        order = Order(orderkey=self.key.id(),
+        order = Order(orderkey=self.key.urlsafe(),
                       items=itemsie,
                       pickuplocation=self.pickuplocation,
                       pickuptime=self.pickuptime,
@@ -127,42 +129,15 @@ class OrderStore(ndb.Model):
                       orderplacedtime=self.orderplacedtime,
                       status=self.status,
                       comments=self.comments,
-                      ordercounter=index
+                      ordercounter=index,
+                      user=self.user.username
                       )
         return order
 
-    def update_status(self, status):
-        """Update order stataus"""
+    def change_status(self, message):
+        """change order stataus"""
         # add checks for completion here if necessary
-        self.status = status
-
-    # def update_from_message(self, message):
-    #     """Update incomplete orders"""
-    #     if message.items:
-    #         itemsie = []
-    #         for item in message.items:
-    #             i = ItemStore.query(ItemStore.itemid == item.itemid).get()
-    #             if i:
-    #                 itemsie.append(ItemCountStore(name=i.name, number=item.number, weight=i.weight, rate=i.rate))
-    #         self.items = itemsie
-
-    #     if message.pickuplocation:
-    #         self.pickuplocation = message.pickuplocation
-
-    #     if message.pickuptime:
-    #         self.pickuptime = message.pickuptime
-
-    #     if message.droplocation:
-    #         self.droplocation = message.droplocation
-
-    #     if message.droptime:
-    #         self.droptime = message.droptime
-
-    #     if message.orderplacedtime:
-    #         self.orderplacedtime = message.orderplacedtime
-
-    #     if message.comments:
-    #         self.comments = message.comments
+        self.status = message.status
 
     @classmethod
     def put_from_message(cls, message, user):

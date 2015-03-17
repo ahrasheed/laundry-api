@@ -37,7 +37,7 @@ import time
 from webapp2_extras.sessions import SessionDict
 from bp_includes.models import User
 from webapp2_extras import sessions, securecookie, auth
-from bp_content.themes.default.handlers.models import OrderStore, Order, OrderList, Item, ItemList, ItemStore
+from bp_content.themes.default.handlers.models import OrderStore, Order, OrderList, Item, ItemList, ItemStore, Status
 
 
 package = 'easy'
@@ -158,7 +158,7 @@ class LaundryApi(remote.Service):
 
     @endpoints.method(message_types.VoidMessage, OrderList,
                       path='orders', http_method='GET',
-                      name='laundry.getAllOrders')
+                      name='laundry.getUserOrders')
     def order_list(self, request):
 
             # if orderstorelist:
@@ -177,6 +177,17 @@ class LaundryApi(remote.Service):
         o_list = OrderList(orderlist=q)
         return o_list
 
+    @endpoints.method(message_types.VoidMessage, OrderList,
+                      path='allorders', http_method='GET',
+                      name='laundry.getAllOrders')
+    def all_orders(self, request):
+
+        q = [o.to_message(idx+1) for idx, o in enumerate(OrderStore.query().order(OrderStore.orderplacedtime).fetch())]
+        print q
+        o_list = OrderList(orderlist=q)
+        return o_list
+
+
     @endpoints.method(message_types.VoidMessage, ItemList,
                       path='items', http_method='GET',
                       name='laundry.getAllItems')
@@ -193,7 +204,7 @@ class LaundryApi(remote.Service):
                       name='laundry.addItem')
     def add_item(self, request):
 
-        i = ItemStore.put_from_message(request, current_user)
+        i = ItemStore.put_from_message(request)
         if i:
             return message_types.VoidMessage()
 
@@ -235,6 +246,22 @@ class LaundryApi(remote.Service):
         user = user_key.get()
 
         return TestMessage(username=user.username)
+
+    @endpoints.method(Status, message_types.VoidMessage,
+                      path='changestatus', http_method='POST',
+                      name='laundry.changestatus')
+    def change_status(self, request):
+
+        key = ndb.Key(urlsafe=request.orderkey)
+        o = key.get()
+        if o:
+            o.change_status(request)
+            flag = o.put()
+            if flag:
+                return message_types.VoidMessage()
+
+        message = 'No entity with the id "%s" exists.' % request.orderkey
+        raise endpoints.NotFoundException(message)
 
 
 APPLICATION = endpoints.api_server([LaundryApi], restricted=False)
