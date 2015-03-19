@@ -59,6 +59,7 @@ class OrderList(messages.Message):
 
 # ----- DATE STORE MODELS ------
 
+
 class ItemCountStore(ndb.Model):
     """Structured Property for Orders"""
     name = ndb.StringProperty()

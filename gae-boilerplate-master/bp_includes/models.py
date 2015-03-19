@@ -1,6 +1,31 @@
 from webapp2_extras.appengine.auth.models import User
 from google.appengine.ext import ndb
 
+from protorpc import messages
+from protorpc import message_types
+
+
+class Address(messages.Message):
+    """Add address message"""
+    address = messages.StringField(1, required=True)
+    zipcode = messages.IntegerField(2)
+    city = messages.StringField(3)
+    state = messages.StringField(4)
+    country = messages.StringField(5)
+
+
+class UserInfo(messages.Message):
+    """User info message"""
+    username = messages.StringField(1, required=True)
+    name = messages.StringField(2)
+    last_name = messages.StringField(3)
+    email = messages.StringField(4)
+    city = messages.StringField(5)
+    zipcode = messages.IntegerField(6)
+    state = messages.StringField(7)
+    country = messages.StringField(8)
+    address = messages.StringField(9, repeated=True)
+
 
 class User(User):
     """
@@ -31,7 +56,15 @@ class User(User):
     tz = ndb.StringProperty()
     #: Account activation verifies email
     activated = ndb.BooleanProperty(default=False)
-	
+    # Users State
+    state = ndb.StringProperty()
+    # Users City
+    city = ndb.StringProperty()
+    # Users zipcode
+    zipcode = ndb.IntegerProperty()
+    # Users address
+    address = ndb.TextProperty(repeated=True)
+
     @classmethod
     def get_by_email(cls, email):
         """Returns a user object based on an email.
@@ -56,6 +89,19 @@ class User(User):
     @classmethod
     def delete_resend_token(cls, user_id, token):
         cls.token_model.get_key(user_id, 'resend-activation-mail', token).delete()
+
+    def to_message(self):
+        """Turns User into UserInfo message"""
+        userinfo = UserInfo(username=self.username,
+                            name=self.name,
+                            last_name=self.last_name,
+                            email=self.email,
+                            city=self.city,
+                            zipcode=self.zipcode,
+                            state=self.state,
+                            country=self.country,
+                            address=self.address)
+        return userinfo
 
     def get_social_providers_names(self):
         social_user_objects = SocialUser.get_by_user(self.key)
@@ -141,7 +187,7 @@ class SocialUser(ndb.Model):
             return False
         else:
             return True
-    
+
     @classmethod
     def check_unique_user(cls, provider, user):
         # pair (user, provider) should be unique
@@ -155,7 +201,7 @@ class SocialUser(ndb.Model):
     def check_unique(cls, user, provider, uid):
         # pair (provider, uid) should be unique and pair (user, provider) should be unique
         return cls.check_unique_uid(provider, uid) and cls.check_unique_user(provider, user)
-    
+
     @staticmethod
     def open_id_providers():
         return [k for k,v in SocialUser.PROVIDERS_INFO.items() if v['uri']]

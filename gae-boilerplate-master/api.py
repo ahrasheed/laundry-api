@@ -1,30 +1,3 @@
-# from models import OrderStore, Order, OrderList, Item, ItemList, ItemStore
-# from google.appengine.ext import ndb
-
-# import endpoints
-# from protorpc import messages
-# from protorpc import message_types
-# from protorpc import remote
-
-
-
-# package = 'easy'
-
-# WEB_CLIENT_ID = 'replace this with your web client application ID'
-# ANDROID_CLIENT_ID = 'replace this with your Android client ID'
-# IOS_CLIENT_ID = 'replace this with your iOS client ID'
-# ANDROID_AUDIENCE = WEB_CLIENT_ID
-
-
-# @endpoints.api(name='laundry', version='v1',
-#                allowed_client_ids=[WEB_CLIENT_ID, ANDROID_CLIENT_ID,
-#                                    IOS_CLIENT_ID,
-#                                    endpoints.API_EXPLORER_CLIENT_ID],
-#                audiences=[ANDROID_AUDIENCE],
-#                scopes=[endpoints.EMAIL_SCOPE])
-# class LaundryApi(remote.Service):
-#     """Laundry API v1."""
-
 import Cookie
 import logging
 import endpoints
@@ -35,9 +8,9 @@ from protorpc import message_types
 from protorpc import messages
 import time
 from webapp2_extras.sessions import SessionDict
-from bp_includes.models import User
+from bp_includes.models import User, UserInfo, Address
 from webapp2_extras import sessions, securecookie, auth
-from bp_content.themes.default.handlers.models import OrderStore, Order, OrderList, Item, ItemList, ItemStore, Status
+from bp_content.themes.default.handlers.models import OrderStore, Order, OrderList, Status, Item, ItemList, ItemStore
 
 
 package = 'easy'
@@ -53,13 +26,23 @@ SESSION_ATTRIBUTES = ['user_id', 'remember',
 
 SESSION_SECRET_KEY = '9C3155EFEEB9D9A66A22EDC16AEDA'
 
-class TestMessage(messages.Message):
-    username = messages.StringField(2)
+# WEB_CLIENT_ID = 'replace this with your web client application ID'
+# ANDROID_CLIENT_ID = 'replace this with your Android client ID'
+# IOS_CLIENT_ID = 'replace this with your iOS client ID'
+# ANDROID_AUDIENCE = WEB_CLIENT_ID
 
+
+# @endpoints.api(name='laundry', version='v1',
+#                allowed_client_ids=[WEB_CLIENT_ID, ANDROID_CLIENT_ID,
+#                                    IOS_CLIENT_ID,
+#                                    endpoints.API_EXPLORER_CLIENT_ID],
+#                audiences=[ANDROID_AUDIENCE],
+#                scopes=[endpoints.EMAIL_SCOPE])
 
 @endpoints.api(name='laundry_api', version='v1',
                description='Laundry API')
 class LaundryApi(remote.Service):
+    """Laundry API v1."""
     user = None
     token = None
 
@@ -156,12 +139,29 @@ class LaundryApi(remote.Service):
 
         return user, token
 
+# ---- GET METHODS ---- #
+
+    @endpoints.method(message_types.VoidMessage, UserInfo,
+                      path='getuserinfo', http_method='GET',
+                      name='laundry.User.getUserInfo')
+    def get_userinfo(self, request):
+        self.get_user_from_cookie()
+
+        if not self.user:
+            raise endpoints.UnauthorizedException('Invalid token.')
+
+        userkey_id = self.user['user_id']
+        user_key = ndb.Key('User', userkey_id)
+        current_user = user_key.get()
+
+        userinfo_message = current_user.to_message()
+        return userinfo_message
+
     @endpoints.method(message_types.VoidMessage, OrderList,
                       path='orders', http_method='GET',
                       name='laundry.getUserOrders')
     def order_list(self, request):
 
-            # if orderstorelist:
         self.get_user_from_cookie()
 
         if not self.user:
@@ -184,7 +184,6 @@ class LaundryApi(remote.Service):
         o_list = OrderList(orderlist=q)
         return o_list
 
-
     @endpoints.method(message_types.VoidMessage, ItemList,
                       path='items', http_method='GET',
                       name='laundry.getAllItems')
@@ -193,7 +192,59 @@ class LaundryApi(remote.Service):
         i_list = ItemList(itemlist=q)
         return i_list
 
-# ---- POST METHODS-----#
+# ---- POST METHODS ---- #
+
+    @endpoints.method(Address, message_types.VoidMessage,
+                      path='addaddress', http_method='POST',
+                      name='laundry.User.addUserAddress')
+    def add_address(self, request):
+
+        self.get_user_from_cookie()
+
+        if not self.user:
+            raise endpoints.UnauthorizedException('Invalid token.')
+
+        userkey_id = self.user['user_id']
+        user_key = ndb.Key('User', userkey_id)
+        current_user = user_key.get()
+
+        current_user.address.append(request.address)
+
+        if request.city:
+            current_user.city = request.city
+        if request.state:
+            current_user.state = request.state
+        if request.zipcode:
+            current_user.zipcode = request.zipcode
+
+        flag = current_user.put()
+
+        if flag:
+            return message_types.VoidMessage()
+
+    @endpoints.method(UserInfo, message_types.VoidMessage,
+                      path='addinfo', http_method='POST',
+                      name='laundry.User.addUserInfo')
+    def add_info(self, request):
+
+        self.get_user_from_cookie()
+
+        if not self.user:
+            raise endpoints.UnauthorizedException('Invalid token.')
+
+        userkey_id = self.user['user_id']
+        user_key = ndb.Key('User', userkey_id)
+        current_user = user_key.get()
+
+        if request.name:
+            current_user.name = request.name
+        if request.last_name:
+            current_user.last_name = request.last_name
+
+        flag = current_user.put()
+
+        if flag:
+            return message_types.VoidMessage()
 
     @endpoints.method(Item, message_types.VoidMessage,
                       path='additem', http_method='POST',
@@ -240,22 +291,6 @@ class LaundryApi(remote.Service):
 
         message = 'No entity with the id "%s" exists.' % request.orderkey
         raise endpoints.NotFoundException(message)
-
-    @endpoints.method(message_types.VoidMessage, TestMessage,
-                      path='testing', http_method='GET',
-                      name='testit')
-    def testit(self, request):
-        # return Item(username='testit')
-        self.get_user_from_cookie()
-
-        if not self.user:
-            raise endpoints.UnauthorizedException('Invalid token.')
-
-        userkey_id = self.user['user_id']
-        user_key = ndb.Key('User', userkey_id)
-        user = user_key.get()
-
-        return TestMessage(username=user.username)
 
 
 APPLICATION = endpoints.api_server([LaundryApi], restricted=False)
