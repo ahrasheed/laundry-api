@@ -216,6 +216,8 @@ class LaundryApi(remote.Service):
             current_user.state = request.state
         if request.zipcode:
             current_user.zipcode = request.zipcode
+        if request.country:
+            current_user.country = request.country
 
         flag = current_user.put()
 
