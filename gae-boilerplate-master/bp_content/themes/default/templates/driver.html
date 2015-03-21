@@ -25,30 +25,39 @@
                                             <th>Drop Off Time</th>
 											<th>Drop Off Location</th>
 											<th>Username</th>
-                                            <th>Items</th>
+                                            <th>Items<br>Name | Weight | Quantity</th>
 											<th>Total Weight</th>
 											<th>Total Bill</th>
 											<th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="odd gradeX" ng-repeat="order in orders">									
+                                        <tr class="odd gradeX" ng-repeat="order in allorders">									
                                             <td>{[{ order.orderplacedtime  | date:'medium' }]}</td>
                                             <td>{[{ order.pickuptime  | date:'medium' }]}</td>
                                             <td></td>
                                             <td>{[{ order.droptime | date:'medium'  }]}</td>
                                             <td></td>						
-                                            <td></td>												
+                                            <td>{[{ order.user }]}</td>												
                                             <td><table>
-											<tr><th>Name </th><th>Weight </th><th>Quantity </th></tr>
+											<tr></tr>
 												<tr ng-repeat="item in order.items">							
-												<td>{[{ item.name }]}</td>
-												<td>~ {[{ item.weight }]} lbs</td>
-												<td>x {[{ item.number }]}</td>	</tr>
+												<td> {[{ item.name }]} </td>
+												<td> ~ {[{ item.weight }]} lbs </td>
+												<td> x {[{ item.number }]} </td>	</tr>
 											</table></td>
 											<td></td>	
 											<td></td>
-											<td>{[{ order.status  }]}</td>
+											<td>
+											<select ng-model="order.status">
+												<option ng-selected="order.status === 'INIT'">INIT</option>
+												<option ng-selected="order.status === 'INCOMPLETE'">INCOMPLETE</option>
+												<option ng-selected="order.status === 'PROCESSING'">PROCESSING</option>
+												<option ng-selected="order.status === 'ENROUTE'">ENROUTE</option>
+												<option ng-selected="order.status === 'COMPLETED'">COMPLETED</option>
+											</select>
+											<button class="btn btn-primary btn-block" type="button" ng-click="updatestatus(order)">UPDATE</button>
+											</td>
 										</tr>        
                                     </tbody>
                                 </table>

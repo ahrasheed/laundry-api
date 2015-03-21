@@ -11,18 +11,18 @@
 	</div>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-3 sidebar">	
+			<div class="col-md-2 sidebar">	
 			<h2>My Orders {[{ testdata.test }]}</h2> 
 			          <ul class="nav nav-pills nav-stacked">
 						<li ng-repeat="ordertag in orders" ng-switch on="ordertag.ordercounter" ng-class="{ active:isOrder(ordertag.ordercounter) }">
-							<a href="#" ng-switch-default ng-click="selectOrder(ordertag.ordercounter)">{[{ ordertag.orderplacedtime | date:'medium' }]}</a> 
+							<a href="#" ng-switch-default ng-click="selectOrder(ordertag.ordercounter)">{[{ ordertag.orderplacedtime | date:'mediumDate' }]}</a> 
 							<a href="#" ng-switch-when='0' ng-click="selectOrder(ordertag.ordercounter)">Place New Order</a> 
 						</li>
 					  </ul>		
 			</div>
 			<div class="col-md-5" ng-switch on="orderid">
 			
-			<h2 ng-switch-default>{[{ orders[orderid].orderplacedtime | date:'medium' }]}</h2> 
+			<h2 ng-switch-default>{[{ orders[orderid].orderplacedtime | date:'mediumDate' }]}</h2> 
 			<h2 ng-switch-when='0'>Place New Order</h2> 
 			
 				
@@ -65,7 +65,7 @@
 			</div>
 			</div>
 			
-			<div class="col-md-4" ng-switch on="orderid">
+			<div class="col-md-5" ng-switch on="orderid">
 				<div ng-switch-when='0'>
 				<div class="row">
 					<div class="col-md-6">

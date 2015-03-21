@@ -25,6 +25,8 @@
 	//Get All Orders
 	$http.get('_ah/api/laundry_api/v1/orders').success(function(data, status, headers, config) { $scope.orders = $scope.orders.concat(data.orderlist); }).error(function(data, status, headers, config) {});	
 	
+	$http.get('_ah/api/laundry_api/v1/allorders').success(function(data, status, headers, config) { $scope.allorders = data.orderlist; }).error(function(data, status, headers, config) {});	
+	
 	//};
 	
 //	timeout( function(){ $scope.initialize(); }, 1000);
@@ -164,6 +166,13 @@
 		
 
     };
+	
+	$scope.updatestatus = function(order){		
+			$scope.orderstatus = [{ orderkey: order.orderkey, status: order.status }];
+			$http.post('_ah/api/laundry_api/v1/changestatus', $scope.orderstatus).success(function(data, status, headers, config) { $scope.showSuccessAlert = true; $scope.successTextAlert = "Order Updated"; 				
+			$http.get('_ah/api/laundry_api/v1/allorders').success(function(data, status, headers, config) { $scope.allorders = data.orderlist; }).error(function(data, status, headers, config) {});			
+		}).error(function(data, status, headers, config) { });		
+	};
 	
 	
   });  
