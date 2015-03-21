@@ -25,6 +25,34 @@
 			
 			<div class="col-md-5" ng-switch on="orderid">
 		
+				<div ng-switch-default class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-6"><span style="font-size: 30px">Order Status</span></div>
+									<div class="col-md-6" style="text-align:right;">
+									<span ng-if="orders[orderid].status === 'INIT'"  style="font-size: 30px; color: grey;">INITIATED</span>
+									<span ng-if="orders[orderid].status === 'PROCESSING'"  style="font-size: 30px; color: grey;">PROCESSING</span>
+									<span ng-if="orders[orderid].status === 'ENROUTE'"  style="font-size: 30px; color: grey;">ENROUTE</span>
+									<span ng-if="orders[orderid].status === 'COMPLETED'"  style="font-size: 30px; color: grey;">COMPLETED</span>
+									<span ng-if="orders[orderid].status === 'INCOMPLETE'"  style="font-size: 30px; color: grey;">INCOMPLETE</span>
+									</div>
+								</div>
+								 <div class="progress">
+									<div  ng-if="orders[orderid].status === 'INIT'" class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 25%"><span class="sr-only">25% INITIATED</span></div>
+									<div  ng-if="orders[orderid].status === 'PROCESSING'" class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 50%"><span class="sr-only">50% PROCESSING</span></div>
+									<div  ng-if="orders[orderid].status === 'ENROUTE'" class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 75%"><span class="sr-only">75% ENROUTE</span></div>
+									<div  ng-if="orders[orderid].status === 'COMPLETED'" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%"><span class="sr-only">100% COMPLETED</span></div>
+									<div  ng-if="orders[orderid].status === 'INCOMPLETE'" class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%"><span class="sr-only">100% INCOMPLETE</span></div>		
+								</div>
+							</div>
+							
+						</div>			
+					</div>
+				</div>
+		
+		
 						<div class="panel panel-default">
 							<div class="panel-body">		
 			
@@ -36,6 +64,9 @@
 				
 				 <div class="table-responsive">          
 					  <table class="table item-table" style="font-size: 22px;color: rgb(100, 100, 100);">
+						<thead>
+							<th></th><th>Item</th><th style="text-align:right;">Weight</th><th style="text-align:right;">Quantity</th><th ng-show="orderid === 0"></th>
+						</thead>
 						<tbody>
 						  <tr ng-repeat="item in orders[orderid].items">
 						  	<td>{[{ $index + 1 }]}. </td>
@@ -167,33 +198,7 @@
 				
 				</div>
 				<div ng-switch-default>
-				
-				<div class="row">
-					<div class="col-md-12">
-						<div class="panel panel-default">
-							<div class="panel-body">
-								<div class="row">
-									<div class="col-md-6"><span style="font-size: 30px">Order Status</span></div>
-									<div class="col-md-6" style="text-align:right;">
-									<span ng-if="orders[orderid].status === 'INIT'"  style="font-size: 30px; color: grey;">INITIATED</span>
-									<span ng-if="orders[orderid].status === 'PROCESSING'"  style="font-size: 30px; color: grey;">PROCESSING</span>
-									<span ng-if="orders[orderid].status === 'ENROUTE'"  style="font-size: 30px; color: grey;">ENROUTE</span>
-									<span ng-if="orders[orderid].status === 'COMPLETED'"  style="font-size: 30px; color: grey;">COMPLETED</span>
-									<span ng-if="orders[orderid].status === 'INCOMPLETE'"  style="font-size: 30px; color: grey;">INCOMPLETE</span>
-									</div>
-								</div>
-								 <div class="progress">
-									<div  ng-if="orders[orderid].status === 'INIT'" class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 25%"><span class="sr-only">25% INITIATED</span></div>
-									<div  ng-if="orders[orderid].status === 'PROCESSING'" class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 50%"><span class="sr-only">50% PROCESSING</span></div>
-									<div  ng-if="orders[orderid].status === 'ENROUTE'" class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 75%"><span class="sr-only">75% ENROUTE</span></div>
-									<div  ng-if="orders[orderid].status === 'COMPLETED'" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%"><span class="sr-only">100% COMPLETED</span></div>
-									<div  ng-if="orders[orderid].status === 'INCOMPLETE'" class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%"><span class="sr-only">100% INCOMPLETE</span></div>		
-								</div>
-							</div>
-							
-						</div>			
-					</div>
-				</div>
+			
 				
 				<div class="row">
 					<div class="col-md-12">
