@@ -12,28 +12,37 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2 sidebar">	
+		
 			<h2>My Orders {[{ testdata.test }]}</h2> 
 			          <ul class="nav nav-pills nav-stacked">
 						<li ng-repeat="ordertag in orders" ng-switch on="ordertag.ordercounter" ng-class="{ active:isOrder(ordertag.ordercounter) }">
-							<a href="#" ng-switch-default ng-click="selectOrder(ordertag.ordercounter)">{[{ ordertag.orderplacedtime | date:'mediumDate' }]}</a> 
+							<a href="#" ng-switch-default ng-click="selectOrder(ordertag.ordercounter)"><img src="/boilerplate/img/{[{ ordertag.status }]}.png">&nbsp;&nbsp;&nbsp;{[{ ordertag.orderplacedtime | date:'mediumDate' }]}</a> 
 							<a href="#" ng-switch-when='0' ng-click="selectOrder(ordertag.ordercounter)">Place New Order</a> 
 						</li>
 					  </ul>		
+
 			</div>
-			<div class="col-md-5" ng-switch on="orderid">
 			
-			<h2 ng-switch-default>{[{ orders[orderid].orderplacedtime | date:'mediumDate' }]}</h2> 
+			<div class="col-md-5" ng-switch on="orderid">
+		
+						<div class="panel panel-default">
+							<div class="panel-body">		
+			
+			
+			
+			<span style="font-size:30px" ng-switch-default>{[{ orders[orderid].orderplacedtime | date:'mediumDate' }]}</span> 
 			<h2 ng-switch-when='0'>Place New Order</h2> 
 			
 				
 				 <div class="table-responsive">          
-					  <table class="table item-table">
+					  <table class="table item-table" style="font-size: 22px;color: rgb(100, 100, 100);">
 						<tbody>
 						  <tr ng-repeat="item in orders[orderid].items">
+						  	<td>{[{ $index + 1 }]}. </td>
 							<td>{[{ item.name }]}</td>
-							<td>~ {[{ item.weight }]} lbs</td>
-							<td>{[{ item.number }]}</td>							
-							<td width="56"><button ng-show="orderid === 0" class="btn btn-default btn-block" type="button" ng-click="remove(item)"><span class="glyphicon glyphicon-remove"></span></button></td>
+							<td style="text-align:right;">~ {[{ item.weight }]} lbs</td>
+							<td style="text-align:right;">{[{ item.number }]}</td>							
+							<td ng-show="orderid === 0" width="56"><button class="btn btn-default btn-block" type="button" ng-click="remove(item)"><span class="glyphicon glyphicon-remove"></span></button></td>
 						  </tr>
 						</tbody>
 					  </table>
@@ -63,14 +72,23 @@
 			
 			<button ng-hide="addform" class="btn btn-success btn-block" ng-click="addform = true"  ng-disabled="orders[orderid].ordercounter > 0"><span class="glyphicon glyphicon-plus"></span> Add New Item</button>
 			</div>
+			
+			</div>
+			</div>
+			
+			
 			</div>
 			
 			<div class="col-md-5" ng-switch on="orderid">
 				<div ng-switch-when='0'>
+				
+				<div class="panel panel-default">
+				<div class="panel-body">		
+	
+				
 				<div class="row">
 					<div class="col-md-6">
-						<h2 class="text-left">Estimated Weight</h2>
-						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Minimum Weight of 15 lbs]</blockquote>
+						<h2 class="text-left">Est. Weight</h2>
 					</div>
 					<div class="col-md-6"><h2 class="text-right" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~ {[{ orders[orderid].totalweight | number:2 }]} lbs</h2></div>
 				</div>			
@@ -94,6 +112,15 @@
 				</div>
 				
 				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+						  <label for="usr">Pick Up Address</label>
+						  <input type="text" class="form-control">
+						</div>					
+					</div>
+				</div>
+				
+				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
 						  <label for="usr">Drop Off Date</label>
@@ -111,70 +138,138 @@
 					</div>
 				</div>
 				
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+						  <label for="usr">Drop Off Address</label>
+						  <input type="text" class="form-control">
+						</div>					
+					</div>
+				</div>
+				
 						<div class="form-group">
 							  <label for="comment">Special Instructions:</label>
-							  <textarea class="form-control" rows="5" id="comment" ng-model="orders[orderid].comments" ng-disabled="orders[orderid].status === 'placed'"></textarea>
+							  <textarea class="form-control" rows="3" id="comment" ng-model="orders[orderid].comments" ng-disabled="orders[orderid].status === 'placed'"></textarea>
 						</div>
 						
 				<div class="row">
 					<div class="col-md-8">
 						<h2 class="text-left">Total Price</h2>
-						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Price is Estimated]</blockquote>
 					</div>
 					<div class="col-md-4"><h2 class="text-right">{[{ orders[orderid].totalweight * 10 | currency }]}</h2></div>
 				</div>			
 
 				 <button class="btn btn-lg btn-block btn-success" ng-click="placeorder()" ng-disabled="orders[orderid].status === 'placed'"><span class="glyphicon glyphicon-shopping-cart"></span> Place Order</button>		
+				
+				</div>
+				</div>
+				
+				
 				</div>
 				<div ng-switch-default>
+				
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body">
 								<div class="row">
-					<div class="col-md-6">
-						<h2 class="text-left">Estimated Weight</h2>
-						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Minimum Weight of 15 lbs]</blockquote>
-					</div>
-					<div class="col-md-6"><h2 class="text-right" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~ {[{ orders[orderid].totalweight | number:2 }]} lbs</h2></div>
-				</div>			
-				
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-						  <label for="usr">Pick Up Time</label><br>
-						  <span style="font-size:20px" ng-bind="orders[orderid].pickuptime | date:'medium'"></span>
-						</div>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group">
-						  <label for="usr">Drop Off Time</label><br>
-						  <span style="font-size:20px" ng-bind="orders[orderid].droptime | date:'medium'"></span>
-						</div>
+									<div class="col-md-6"><span style="font-size: 30px">Order Status</span></div>
+									<div class="col-md-6" style="text-align:right;">
+									<span ng-if="orders[orderid].status === 'INIT'"  style="font-size: 30px; color: grey;">INITIATED</span>
+									<span ng-if="orders[orderid].status === 'PROCESSING'"  style="font-size: 30px; color: grey;">PROCESSING</span>
+									<span ng-if="orders[orderid].status === 'ENROUTE'"  style="font-size: 30px; color: grey;">ENROUTE</span>
+									<span ng-if="orders[orderid].status === 'COMPLETED'"  style="font-size: 30px; color: grey;">COMPLETED</span>
+									<span ng-if="orders[orderid].status === 'INCOMPLETE'"  style="font-size: 30px; color: grey;">INCOMPLETE</span>
+									</div>
+								</div>
+								 <div class="progress">
+									<div  ng-if="orders[orderid].status === 'INIT'" class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 25%"><span class="sr-only">25% INITIATED</span></div>
+									<div  ng-if="orders[orderid].status === 'PROCESSING'" class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 50%"><span class="sr-only">50% PROCESSING</span></div>
+									<div  ng-if="orders[orderid].status === 'ENROUTE'" class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 75%"><span class="sr-only">75% ENROUTE</span></div>
+									<div  ng-if="orders[orderid].status === 'COMPLETED'" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%"><span class="sr-only">100% COMPLETED</span></div>
+									<div  ng-if="orders[orderid].status === 'INCOMPLETE'" class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%"><span class="sr-only">100% INCOMPLETE</span></div>		
+								</div>
+							</div>
+							
+						</div>			
 					</div>
 				</div>
 				
 				<div class="row">
 					<div class="col-md-12">
-						<div class="form-group">
-						  <label for="usr">Order Status</label><br>
-						  <span ng-bind="orders[orderid].status"></span>
-						</div>
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-6"><span style="font-size: 30px">Weight</span></div>
+									<div class="col-md-6" style="text-align:right;"><span style="font-size: 30px;" ng-class="{ 'text-danger' : orders[orderid].totalweight < 15, 'text-success' : orders[orderid].totalweight >= 15 }">~{[{ orders[orderid].totalweight | number:2 }]} lbs</span></div>
+								</div>
+							</div>
+						</div>			
 					</div>
-				</div>
-				
-						<div class="form-group">
-							  <label for="comment">Special Instructions:</label><br>
-							  <span ng-bind="orders[orderid].comments"></span>
+				</div>		
+
+				<div class="row">
+					<div class="col-md-12">
+
+							
+								<div class="row">
+								
+									<div class="col-md-6">
+						<div class="well well-lg">
+
+										  <span style="font-size: 24px ">Pick Up Time</span><br>
+										  
+										  <span style="font-size:24px; font-weight:bold;" ng-bind="orders[orderid].pickuptime | date:'mediumDate'"></span><br><br>
+										  
+										  <div class="label label-default" style="font-size:28px;" ng-bind="orders[orderid].pickuptime | date:'shortTime'"></div>
+
 						</div>
+									</div>
+
+									<div class="col-md-6">
+						<div class="well well-lg">
+
+										  <span style="font-size: 24px; ">Drop Off Time</span><br>
+										  
+										  <span style="font-size:24px; font-weight:bold; " ng-bind="orders[orderid].droptime | date:'mediumDate'"></span><br><br>
+										  
+										  <div class="label label-default" style="font-size:28px;" ng-bind="orders[orderid].droptime | date:'shortTime'"></div>
+
+						</div>	
+									</div>
+									
+								</div>
+				
+
+					</div>
+				</div>		
+				
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body">									
+								<div class="form-group">
+										<label for="comment">Special Instructions:</label><br>
+										<span style="font-size:18px;" ng-bind="orders[orderid].comments"></span>
+								</div>						
+							</div>
+						</div>			
+					</div>
+				</div>		
 						
 				<div class="row">
-					<div class="col-md-8">
-						<h2 class="text-left">Total Price</h2>
-						<blockquote style="padding-top:0px; padding-bottom:0px; color: grey">[Price is Estimated]</blockquote>
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-8"><span style="font-size: 30px" class="text-left">Total Price</span></div>
+									<div class="col-md-4" style="text-align:right;"><span style="font-size: 30px">{[{ orders[orderid].totalbill | currency }]}</span></div>
+								</div>
+							</div>
+						</div>			
 					</div>
-					<div class="col-md-4"><h2 class="text-right">{[{ orders[orderid].totalbill | currency }]}</h2></div>
-				</div>			
-		
+				</div>		
+
 				</div>
 			</div>
 		  </div>

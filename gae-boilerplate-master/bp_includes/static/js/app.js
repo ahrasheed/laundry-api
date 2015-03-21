@@ -85,6 +85,7 @@
 	  {timevalue: '23:00'},
 	  {timevalue: '23:30'}
 	  ];
+	  
 
 	  
 	  $scope.selectOrder = function(oid){
@@ -169,7 +170,7 @@
 	
 	$scope.updatestatus = function(order){		
 			$scope.orderstatus = [{ orderkey: order.orderkey, status: order.status }];
-			$http.post('_ah/api/laundry_api/v1/changestatus', $scope.orderstatus).success(function(data, status, headers, config) { $scope.showSuccessAlert = true; $scope.successTextAlert = "Order Updated"; 				
+			$http.post('_ah/api/laundry_api/v1/changestatus', $scope.orderstatus).success(function(data, status, headers, config) { $scope.showSuccessAlert = true; $scope.successTextAlert = "Order Status Updated"; 				
 			$http.get('_ah/api/laundry_api/v1/allorders').success(function(data, status, headers, config) { $scope.allorders = data.orderlist; }).error(function(data, status, headers, config) {});			
 		}).error(function(data, status, headers, config) { });		
 	};
