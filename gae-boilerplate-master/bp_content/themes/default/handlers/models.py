@@ -10,7 +10,7 @@ from datetime import datetime
 
 class Item(messages.Message):
     """Individual clothing items"""
-    itemkey = messages.IntegerField(1)
+    itemkey = messages.StringField(1)
     name = messages.StringField(2)
     weight = messages.FloatField(3)
     rate = messages.FloatField(4)

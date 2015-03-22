@@ -23,7 +23,7 @@ class UserInfo(messages.Message):
     city = messages.StringField(5)
     zipcode = messages.IntegerField(6)
     state = messages.StringField(7)
-    country = messages.StringField(8)
+    country = messages.StringField(8, default="United States")
     address = messages.StringField(9, repeated=True)
 
 

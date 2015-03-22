@@ -289,6 +289,8 @@ class LaundryApi(remote.Service):
             o.change_status(request)
             flag = o.put()
             if flag:
+                import time
+                time.sleep(1)
                 return message_types.VoidMessage()
 
         message = 'No entity with the id "%s" exists.' % request.orderkey
