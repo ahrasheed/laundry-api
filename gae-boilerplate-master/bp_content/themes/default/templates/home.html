@@ -16,7 +16,7 @@
 			<h2>My Orders {[{ testdata.test }]}</h2> 
 			          <ul class="nav nav-pills nav-stacked">
 						<li ng-repeat="ordertag in orders" ng-switch on="ordertag.ordercounter" ng-class="{ active:isOrder(ordertag.ordercounter) }">
-							<a href="#" ng-switch-default ng-click="selectOrder(ordertag.ordercounter)"><img src="/boilerplate/img/{[{ ordertag.status }]}.png">&nbsp;&nbsp;&nbsp;{[{ ordertag.orderplacedtime | date:'mediumDate' }]}</a> 
+							<a href="#" ng-switch-default ng-click="selectOrder(ordertag.ordercounter)"><img src="/{{ theme }}/img/{[{ ordertag.status }]}.png">&nbsp;&nbsp;&nbsp;{[{ ordertag.orderplacedtime | date:'mediumDate' }]}</a> 
 							<a href="#" ng-switch-when='0' ng-click="selectOrder(ordertag.ordercounter)">Place New Order</a> 
 						</li>
 					  </ul>		
