@@ -146,9 +146,7 @@ class OrderStore(ndb.Model):
         itemsie = []
         if message.items:
             for item in message.items:
-                print item.itemkey
-                i_key = ndb.Key('ItemStore', item.itemkey)
-                i = i_key.get()
+                i = item.itemkey.get()
                 if i:
                     itemsie.append(ItemCountStore(name=i.name, number=item.number, weight=i.weight, rate=i.rate))
 
