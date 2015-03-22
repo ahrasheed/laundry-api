@@ -50,6 +50,7 @@ class LaundryApi(remote.Service):
     def get_user_from_cookie(cls):
         serializer = securecookie.SecureCookieSerializer(SESSION_SECRET_KEY)
         cookie_string = os.environ.get('HTTP_COOKIE')
+        logging.info(cookie_string)
         cookie = Cookie.SimpleCookie()
         cookie.load(cookie_string)
         session = cookie['session'].value
